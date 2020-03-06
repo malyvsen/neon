@@ -8,4 +8,5 @@ pyenv virtualenv 3.7.6 ai &&
 pyenv activate ai &&
 pip install tensorflow torchvision &&
 pip install numpy scikit-learn scikit-image pandas tqdm &&
+pip install jupyter &&
 source deactivate
