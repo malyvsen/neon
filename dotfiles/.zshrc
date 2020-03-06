@@ -68,7 +68,7 @@ ZSH_THEME="agnoster"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git z pip zsh-autosuggestions)
+plugins=(git z zsh-autosuggestions virtualenv)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -99,3 +99,10 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 prompt_context(){} # to hide user@machine
+ZSH_AUTOSUGGEST_STRATEGY=(match_prev_cmd history completion)
+
+
+# pyenv setup
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+export PYENV_VIRTUALENV_DISABLE_PROMPT=1
