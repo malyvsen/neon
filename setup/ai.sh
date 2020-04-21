@@ -10,4 +10,5 @@ pip install tensorflow torchvision &&
 pip install numpy scikit-learn scikit-image pandas tqdm &&
 pip install plotly &&
 pip install jupyter &&
+pip install pylint &&
 source deactivate
