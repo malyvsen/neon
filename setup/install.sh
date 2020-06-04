@@ -7,7 +7,7 @@ pamac install firefox &&
 pamac install geary telegram-desktop caprine &&
 pamac install code &&
 
-pamac install zsh &&
+pamac install zsh && sudo chsh -s /bin/zsh $USER &&
 pamac build oh-my-zsh-git &&
 pamac install zsh-autosuggestions &&
 pamac build spaceship-prompt-git
