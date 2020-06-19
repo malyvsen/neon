@@ -1,7 +1,7 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
-export ZSH="/usr/share/oh-my-zsh/"
+export ZSH="/usr/share/oh-my-zsh"
 
 ZSH_THEME="spaceship"
 
