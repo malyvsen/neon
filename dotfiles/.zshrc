@@ -31,11 +31,3 @@ source $ZSH/oh-my-zsh.sh
 
 prompt_context(){} # to hide user@machine
 ZSH_AUTOSUGGEST_STRATEGY=(match_prev_cmd history completion)
-
-
-# pyenv setup
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
-export PYENV_VIRTUALENV_DISABLE_PROMPT=true
-export VIRTUAL_ENV_DISABLE_PROMPT=true
-export SPACESHIP_VENV_SHOW=false
