@@ -19,6 +19,9 @@ HIST_STAMPS="dd.mm.yyyy"
 
 ZSH_CUSTOM="$HOME/.oh-my-zsh/custom/"
 
+# I'm sorry, vim. I tried.
+export EDITOR="nano"
+
 plugins=(git z zsh-autosuggestions virtualenv)
 
 ZSH_CACHE_DIR=$HOME/.cache/oh-my-zsh
