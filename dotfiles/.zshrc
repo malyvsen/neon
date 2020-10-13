@@ -35,3 +35,7 @@ source $ZSH/oh-my-zsh.sh
 
 prompt_context(){} # to hide user@machine
 ZSH_AUTOSUGGEST_STRATEGY=(match_prev_cmd history completion)
+
+
+# secrets! access codes etc
+source .secrets.sh
