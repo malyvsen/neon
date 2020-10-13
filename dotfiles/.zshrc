@@ -38,4 +38,4 @@ ZSH_AUTOSUGGEST_STRATEGY=(match_prev_cmd history completion)
 
 
 # secrets! access codes etc
-source .secrets.sh
+source $HOME/.secrets.sh
