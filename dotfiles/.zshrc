@@ -23,7 +23,7 @@ ZSH_CUSTOM="$HOME/.oh-my-zsh/custom/"
 # I'm sorry, vim. I tried.
 export EDITOR="nano"
 
-plugins=(git z zsh-autosuggestions virtualenv)
+plugins=(git z zsh-autosuggestions virtualenv ssh-agent)
 
 ZSH_CACHE_DIR=$HOME/.cache/oh-my-zsh
 if [[ ! -d $ZSH_CACHE_DIR ]]; then
