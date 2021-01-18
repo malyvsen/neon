@@ -35,6 +35,7 @@ source $ZSH/oh-my-zsh.sh
 
 prompt_context(){} # to hide user@machine
 ZSH_AUTOSUGGEST_STRATEGY=(match_prev_cmd history completion)
+ZSH_AUTOSUGGEST_COMPLETION_IGNORE="(ssh|scp|rsync|rclone) *"
 
 
 # secrets! access codes etc
