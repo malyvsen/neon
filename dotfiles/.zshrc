@@ -40,3 +40,14 @@ ZSH_AUTOSUGGEST_COMPLETION_IGNORE="(ssh|scp|rsync|rclone) *"
 
 # secrets! access codes etc
 source $HOME/.secrets.sh
+
+
+# NodeJS
+[ -z "$NVM_DIR" ] && export NVM_DIR="$HOME/.nvm"
+source /usr/share/nvm/nvm.sh
+source /usr/share/nvm/bash_completion
+source /usr/share/nvm/install-nvm-exec
+
+
+# Python
+eval "$(pyenv init -)"
