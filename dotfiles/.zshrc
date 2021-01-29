@@ -1,6 +1,3 @@
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-
 export ZSH="/usr/share/oh-my-zsh"
 
 ZSH_THEME="spaceship"
@@ -41,6 +38,8 @@ ZSH_AUTOSUGGEST_COMPLETION_IGNORE="(ssh|scp|rsync|rclone) *"
 # secrets! access codes etc
 source $HOME/.secrets.sh
 
+# utility scripts
+source $HOME/.utils.sh
 
 # NodeJS
 [ -z "$NVM_DIR" ] && export NVM_DIR="$HOME/.nvm"
