@@ -2,6 +2,7 @@ export ZSH="/usr/share/oh-my-zsh"
 
 ZSH_THEME="spaceship"
 export SPACESHIP_PYENV_SHOW=false
+export SPACESHIP_GCLOUD_SHOW=false
 
 # case-sensitive completion
 CASE_SENSITIVE="true"
@@ -46,7 +47,7 @@ source $HOME/.utils.sh
 source /usr/share/nvm/nvm.sh
 source /usr/share/nvm/bash_completion
 source /usr/share/nvm/install-nvm-exec
-
+export PATH="$(yarn global bin):$PATH"
 
 # Python
 eval "$(pyenv init -)"
