@@ -8,6 +8,6 @@ pamac install telegram-desktop caprine &&
 pamac install code &&
 
 pamac install zsh && sudo chsh -s /bin/zsh $USER &&
-pamac build oh-my-zsh-git &&
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&
 pamac install zsh-autosuggestions &&
-pamac build spaceship-prompt-git
+pamac build spaceship-prompt
