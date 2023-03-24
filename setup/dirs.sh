@@ -18,8 +18,8 @@ move_dir DESKTOP "${ROOT_DIR}/library/desktop" &&
 move_dir DOWNLOAD "${ROOT_DIR}/temp" &&
 move_dir TEMPLATES "${ROOT_DIR}/library/templates" &&
 move_dir PUBLICSHARE "${ROOT_DIR}/library/public" &&
-move_dir DOCUMENTS "${ROOT_DIR}/creative/writing" &&
+move_dir DOCUMENTS "${ROOT_DIR}/org" &&
 move_dir MUSIC "${ROOT_DIR}/library/audio/music" &&
-move_dir PICTURES "${ROOT_DIR}/library/visual" &&
-move_dir VIDEOS "${ROOT_DIR}/library/visual/videos" &&
+move_dir PICTURES "${ROOT_DIR}/library/images" &&
+move_dir VIDEOS "${ROOT_DIR}/library/videos" &&
 xdg-user-dirs-update
