@@ -1,9 +1,10 @@
 #!/bin/bash
 echo "Installing additional programs..." &&
 
+pamac install base-devel &&
 pamac install exa bat &&
 pamac install firefox &&
-pamac install telegram-desktop caprine &&
+pamac install telegram-desktop &&
 pamac install code &&
 
 pamac install pyenv &&
