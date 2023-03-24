@@ -1,1 +1,0 @@
-The contents of this folder are a modified version of the Tela GRUB theme: https://www.gnome-look.org/p/1307852/
