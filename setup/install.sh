@@ -5,7 +5,7 @@ pamac install base-devel &&
 pamac install exa bat &&
 pamac install firefox &&
 pamac install telegram-desktop &&
-pamac install code &&
+pamac build visual-studio-code-bin &&
 
 pamac install pyenv &&
 pyenv install 3 &&
