@@ -1,8 +1,9 @@
 #!/bin/bash
 echo "Installing additional programs..." &&
 
-pamac install base-devel eza bat pyenv firefox telegram-desktop zsh zsh-autosuggestions starship gnome-shell-extension-gsconnect &&
+pamac install --no-confirm base-devel eza bat pyenv firefox telegram-desktop zsh zsh-autosuggestions starship gnome-shell-extension-gsconnect &&
 echo "Installed GSConnect for clipboard sharing. Enable the GNOME extension and pair manually." &&
+
 pamac build --no-confirm visual-studio-code-bin &&
 
 eval "$(pyenv init -)" &&
