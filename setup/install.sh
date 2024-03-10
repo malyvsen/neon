@@ -2,7 +2,7 @@
 echo "Installing additional programs..." &&
 
 pamac install base-devel eza bat firefox telegram-desktop zsh zsh-autosuggestions starship &&
-pamac build visual-studio-code-bin &&
+pamac build --no-confirm visual-studio-code-bin &&
 
 pamac install pyenv &&
 eval "$(pyenv init -)" &&
