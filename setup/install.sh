@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "Installing additional programs..." &&
 
-pamac install base-devel eza bat firefox telegram-desktop zsh zsh-autosuggestions starship &&
+pamac install base-devel eza bat firefox telegram-desktop zsh zsh-autosuggestions starship gnome-shell-extension-gsconnect &&
 pamac build --no-confirm visual-studio-code-bin &&
 
 pamac install pyenv &&
