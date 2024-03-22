@@ -12,5 +12,9 @@ pyenv shell $(pyenv latest 3) &&
 curl -sSL https://install.python-poetry.org | python3 - &&
 curl -sSL https://pdm-project.org/install-pdm.py | python3 - &&
 
+curl -sS https://get.volta.sh | bash &&
+volta install node &&
+volta install pnpm &&
+
 sudo chsh -s /bin/zsh $USER &&
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
