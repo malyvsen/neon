@@ -13,6 +13,7 @@ curl -sSL https://install.python-poetry.org | python3 - &&
 curl -sSL https://pdm-project.org/install-pdm.py | python3 - &&
 
 curl -sS https://get.volta.sh | bash &&
+source $HOME/.profile &&  # gets volta in PATH
 volta install node &&
 volta install pnpm &&
 
