@@ -1,7 +1,5 @@
 #!/bin/bash
-echo "Setting up dirs..." &&
-read -p "Enter root directory (to place desktop, documents etc. in): " ROOT_DIR &&
-xdg-user-dirs-update --set ROOT "$ROOT_DIR" &&
+echo "Setting up dirs..."
 
 function move_dir {
     local old_dir=$(xdg-user-dir "$1")
@@ -14,12 +12,12 @@ function move_dir {
     xdg-user-dirs-update --set "$1" "$2"
 }
 
-move_dir DESKTOP "${ROOT_DIR}/library/desktop" &&
-move_dir DOWNLOAD "${ROOT_DIR}/temp" &&
-move_dir TEMPLATES "${ROOT_DIR}/library/templates" &&
-move_dir PUBLICSHARE "${ROOT_DIR}/library/public" &&
-move_dir DOCUMENTS "${ROOT_DIR}/org" &&
-move_dir MUSIC "${ROOT_DIR}/library/audio" &&
-move_dir PICTURES "${ROOT_DIR}/library/images" &&
-move_dir VIDEOS "${ROOT_DIR}/library/videos" &&
+move_dir DESKTOP "${HOME}/library/desktop" &&
+move_dir DOWNLOAD "${HOME}/temp" &&
+move_dir TEMPLATES "${HOME}/library/templates" &&
+move_dir PUBLICSHARE "${HOME}/library/public" &&
+move_dir DOCUMENTS "${HOME}/org" &&
+move_dir MUSIC "${HOME}/library/audio" &&
+move_dir PICTURES "${HOME}/library/images" &&
+move_dir VIDEOS "${HOME}/library/videos" &&
 xdg-user-dirs-update
