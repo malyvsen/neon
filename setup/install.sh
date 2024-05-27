@@ -1,7 +1,9 @@
 #!/bin/bash
 echo "Installing additional programs..." &&
 
-pamac install --no-confirm base-devel eza bat pyenv firefox telegram-desktop zsh zsh-autosuggestions starship gnome-shell-extension-gsconnect &&
+pamac install --no-confirm base-devel eza bat pyenv firefox telegram-desktop zsh zsh-autosuggestions starship gnome-shell-extension-gsconnect docker docker-compose &&
+sudo systemctl enable docker.service &&
+sudo usermod -aG docker $USER &&
 echo "Installed GSConnect for clipboard sharing. Enable the GNOME extension and pair manually." &&
 
 pamac build --no-confirm visual-studio-code-bin &&
