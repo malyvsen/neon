@@ -14,6 +14,8 @@ export PATH="$HOME/.local/bin:$PATH"
 export VOLTA_HOME="$HOME/.volta"
 export PATH="$VOLTA_HOME/bin:$PATH"
 
+export EDITOR="nano"
+
 grlm () {
     current_branch=$(git rev-parse --abbrev-ref HEAD)
     if [[ "$current_branch" == "main" ]]; then
