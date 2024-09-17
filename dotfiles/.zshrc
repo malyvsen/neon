@@ -21,9 +21,7 @@ grlm () {
     if [[ "$current_branch" == "main" ]]; then
         git pull --rebase --autostash
     else
-        git checkout main
-        git pull
-        git checkout "$current_branch"
+        git fetch origin main:main
         git rebase main --autostash
     fi
 } 
