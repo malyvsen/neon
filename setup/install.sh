@@ -1,13 +1,16 @@
 #!/bin/bash
 echo "Installing additional programs..." &&
 
-pamac install --no-confirm base-devel eza bat pyenv firefox telegram-desktop zsh zsh-autosuggestions starship gnome-shell-extension-gsconnect docker docker-compose ttf-twemoji &&
+# ttf-bitstream-vera is the recommended fallback for ttf-twemoji-color
+pamac install --no-confirm base-devel eza bat pyenv firefox telegram-desktop zsh zsh-autosuggestions starship gnome-shell-extension-gsconnect docker docker-compose ttf-bitstream-vera &&
 echo "Installed GSConnect for clipboard sharing. Enable the GNOME extension and pair manually." &&
 sudo systemctl enable docker.service &&
 sudo usermod -aG docker $USER &&
-sudo ln -sf /usr/share/fontconfig/conf.avail/75-twemoji.conf /etc/fonts/conf.d/75-twemoji.conf &&
 
-pamac build --no-confirm visual-studio-code-bin &&
+# get a file which pamac is sometimes blocked from retrieving
+sudo curl -o /var/lib/pacman/sync/packages-meta-ext-v1.json.gz https://aur.manjaro.org/packages-meta-ext-v1.json.gz &&
+pamac build --no-confirm visual-studio-code-bin ttf-twemoji-color &&
+sudo ln -sf /usr/share/fontconfig/conf.avail/46-ttf-twemoji-color.conf /etc/fonts/conf.d/46-ttf-twemoji-color.conf &&
 
 eval "$(pyenv init -)" &&
 pyenv install 3 &&
