@@ -17,6 +17,7 @@ pyenv install 3 &&
 pyenv shell $(pyenv latest 3) &&
 curl -sSL https://install.python-poetry.org | python3 - &&
 curl -sSL https://pdm-project.org/install-pdm.py | python3 - &&
+curl -LsSf https://astral.sh/uv/install.sh | sh &&
 
 curl -sS https://get.volta.sh | bash &&
 source $HOME/.profile &&  # gets volta in PATH
