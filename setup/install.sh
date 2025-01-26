@@ -2,7 +2,7 @@
 echo "Installing additional programs..." &&
 
 # ttf-bitstream-vera is the recommended fallback for ttf-twemoji-color
-pamac install --no-confirm base-devel eza bat pyenv firefox telegram-desktop zsh zsh-autosuggestions starship gnome-shell-extension-gsconnect docker docker-compose ttf-bitstream-vera &&
+pamac install --no-confirm base-devel eza bat pyenv firefox telegram-desktop zsh zsh-autosuggestions starship gnome-shell-extension-gsconnect go docker docker-compose ttf-bitstream-vera &&
 echo "Installed GSConnect for clipboard sharing. Enable the GNOME extension and pair manually." &&
 sudo systemctl enable docker.service &&
 sudo usermod -aG docker $USER &&
@@ -23,6 +23,8 @@ curl -sS https://get.volta.sh | bash &&
 source $HOME/.profile &&  # gets volta in PATH
 volta install node &&
 volta install pnpm &&
+
+go install github.com/bakks/butterfish/cmd/butterfish@latest &&
 
 sudo chsh -s /bin/zsh $USER &&
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
