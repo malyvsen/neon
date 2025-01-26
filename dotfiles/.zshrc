@@ -25,3 +25,6 @@ grlm () {
         git rebase main --autostash
     fi
 } 
+
+# replace current shell with butterfish wrapper
+exec "$(go env GOPATH)/bin/butterfish" shell -m gpt-4o
