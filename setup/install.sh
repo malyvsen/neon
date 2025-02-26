@@ -24,7 +24,5 @@ source $HOME/.profile &&  # gets volta in PATH
 volta install node &&
 volta install pnpm &&
 
-go install github.com/bakks/butterfish/cmd/butterfish@latest &&
-
 sudo chsh -s /bin/zsh $USER &&
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
