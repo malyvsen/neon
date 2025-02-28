@@ -2,7 +2,7 @@
 echo "Installing additional programs..." &&
 
 # ttf-bitstream-vera is the recommended fallback for ttf-twemoji-color
-pamac install --no-confirm base-devel eza bat pyenv firefox telegram-desktop zsh zsh-autosuggestions starship gnome-shell-extension-gsconnect go docker docker-compose ttf-bitstream-vera &&
+pamac install --no-confirm base-devel eza bat pyenv firefox telegram-desktop zsh zsh-autosuggestions starship gnome-shell-extension-gsconnect go docker docker-buildx docker-compose ttf-bitstream-vera &&
 echo "Installed GSConnect for clipboard sharing. Enable the GNOME extension and pair manually." &&
 sudo systemctl enable docker.service &&
 sudo usermod -aG docker $USER &&
