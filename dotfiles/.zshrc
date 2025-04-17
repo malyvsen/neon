@@ -23,5 +23,10 @@ grlm () {
         git fetch origin $main_branch:$main_branch
         git rebase $main_branch --autostash
     fi
-} 
+}
+
+mcd () {
+    mkdir -p "$1"
+    cd "$1"
+}
 
