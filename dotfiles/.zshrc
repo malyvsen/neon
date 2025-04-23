@@ -30,3 +30,7 @@ mcd () {
     cd "$1"
 }
 
+# machine-specific extras
+if [ -f "$HOME/.zshrc.local" ]; then
+    source "$HOME/.zshrc.local"
+fi
