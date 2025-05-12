@@ -7,8 +7,6 @@ echo "Installed GSConnect for clipboard sharing. Enable the GNOME extension and 
 sudo systemctl enable docker.service &&
 sudo usermod -aG docker $USER &&
 
-# get a file which pamac is sometimes blocked from retrieving
-sudo curl -o /var/lib/pacman/sync/packages-meta-ext-v1.json.gz https://aur.manjaro.org/packages-meta-ext-v1.json.gz &&
 pamac build --no-confirm visual-studio-code-bin ttf-twemoji-color &&
 sudo ln -sf /usr/share/fontconfig/conf.avail/46-ttf-twemoji-color.conf /etc/fonts/conf.d/46-ttf-twemoji-color.conf &&
 
