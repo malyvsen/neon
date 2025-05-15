@@ -9,4 +9,5 @@ source "./setup/pamac.sh" &&
 source "./setup/fingeprint.sh" &&
 source "./setup/install.sh" &&
 source "./setup/ssh.sh" &&
+source "./setup/gnome.sh" &&
 source "./setup/dotfiles.sh"
