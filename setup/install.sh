@@ -7,7 +7,7 @@ echo "Installed GSConnect for clipboard sharing. Enable the GNOME extension and 
 sudo systemctl enable docker.service &&
 sudo usermod -aG docker $USER &&
 
-pamac build --no-confirm visual-studio-code-bin ttf-twemoji-color &&
+pamac build --no-confirm spotify visual-studio-code-bin ttf-twemoji-color &&
 sudo ln -sf /usr/share/fontconfig/conf.avail/46-ttf-twemoji-color.conf /etc/fonts/conf.d/46-ttf-twemoji-color.conf &&
 
 curl -LsSf https://astral.sh/uv/install.sh | sh &&
