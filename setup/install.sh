@@ -10,9 +10,6 @@ sudo usermod -aG docker $USER &&
 pamac build --no-confirm spotify visual-studio-code-bin ttf-twemoji-color &&
 sudo ln -sf /usr/share/fontconfig/conf.avail/46-ttf-twemoji-color.conf /etc/fonts/conf.d/46-ttf-twemoji-color.conf &&
 
-gnome-extensions install nightthemeswitcher@romainvigier.fr &&
-gnome-extensions enable nightthemeswitcher@romainvigier.fr &&
-
 curl -LsSf https://astral.sh/uv/install.sh | sh &&
 
 curl -sS https://get.volta.sh | bash &&
