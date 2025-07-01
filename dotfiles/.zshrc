@@ -9,6 +9,9 @@ eval "$(starship init zsh)"
 export PATH="$HOME/.local/bin:$PATH"
 eval "$(uv generate-shell-completion zsh)"
 
+# utils in rust
+export PATH="$HOME/.cargo/bin:$PATH"
+
 export VOLTA_HOME="$HOME/.volta"
 export PATH="$VOLTA_HOME/bin:$PATH"
 
