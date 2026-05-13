@@ -15,3 +15,5 @@ disable-model-invocation: yes
     d. Do what the user asked you to and - if any changes were made - verify the integrity of the code using the repository's preferred way of doing so.
     e. Continue to the next comment.
 4. When done with all comments, offer to push, possibly with `--force-with-lease` if needed.
+
+When doing step 3, do so interactively, i.e. talk about the first comment, talk with the user about it, address it in full, only then move on to the next one.
