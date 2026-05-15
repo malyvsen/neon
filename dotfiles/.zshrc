@@ -17,18 +17,31 @@ export PATH="$VOLTA_HOME/bin:$PATH"
 
 export EDITOR="nano"
 
+grbur () {
+    : <<'DOC'
+rebase branch stack onto chosen branch
+DOC
+    git rebase --update-refs --autostash "$1"
+}
+
 grlm () {
+    : <<'DOC'
+rebase branch stack onto latest main
+DOC
     main_branch=$(git branch -r | grep 'HEAD' | cut -d'/' -f3)
     current_branch=$(git rev-parse --abbrev-ref HEAD)
     if [[ "$current_branch" == "$main_branch" ]]; then
         git pull --rebase --autostash
     else
         git fetch origin $main_branch:$main_branch
-        git rebase $main_branch --autostash
+        grbur "$main_branch"
     fi
 }
 
 mcd () {
+    : <<'DOC'
+make a directory and cd into it
+DOC
     mkdir -p "$1"
     cd "$1"
 }
