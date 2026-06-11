@@ -16,3 +16,4 @@ Further writing guidelines:
 - If there is a key finding, present it in a naturally exposed place (quite often at the top of the report/section you're writing).
 - The reader will quite often wonder about the counterfactual (think: control group). If the experiment was done in a way that makes such reasoning not apply, don't bother to mention it - but if it does, try to present the counterfactual in a way that is easy to compare to the actual result.
 - The reader will not be aware of this skill's existence, so do not treat terms or mental models from this skill as known to them.
+- If you wrote one-off code or made changes you intend to revert (potentially reimplementing them cleanly later), make sure the report reads cleanly without these, since they will likely be removed by the time the report is read.
