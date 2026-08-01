@@ -1,15 +1,15 @@
 ---
 name: make-evergreen
-description: Make sure the code is evergreen. Use when explicitly asked to do so.
+description: Make sure the repo is evergreen. Use when explicitly asked to do so.
 ---
 
-# Make sure code is evergreen
+# Make sure the repo is evergreen
 
-The objective is to make sure that code is evergreen, i.e. it looks as if it were written with this logic in mind from the start. This applies to the contents of files, their structure (directories, filenames), and documentation. Remove all convoluted naming, roundabout logic and pointless abstractions.
+The objective is to make sure that the repo is evergreen, i.e. it looks as if it were written with the current logic/features in mind from the start. This applies to the code, file structure (directories, filenames), documentation, and tests. Remove all convoluted naming, roundabout logic and pointless abstractions.
 
-## Scope limits
+## The problem to address
 
-If you have been working on some code changes, then this skill was probably invoked because coding agents tend to produce minimal-diff changes with backward compatibility in mind, and the user does not wish it to be so. Apply changes to the code changes you've made as well as adjacent code. For example:
+If you have recently made some edits, then this skill was probably invoked because agents tend to produce minimal-diff changes with backward compatibility in mind, and the user does not wish it to be so. Make sure what you did, and adjacent/related things, look as if they were written with the user's intent in mind from the start. For example:
 
 - You wanted to create a file called `gardening` where you would put cabbage-planting logic.
 - You discovered that a file with that name already existed and contained irrigation and soil-prep logic.
