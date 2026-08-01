@@ -1,6 +1,7 @@
 ---
 name: make-evergreen
 description: Make sure the repo is evergreen. Use when explicitly asked to do so.
+disable-model-invocation: yes
 ---
 
 # Make sure the repo is evergreen
