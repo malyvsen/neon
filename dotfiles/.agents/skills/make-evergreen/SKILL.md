@@ -1,7 +1,6 @@
 ---
 name: make-evergreen
 description: Make sure the code is evergreen. Use when explicitly asked to do so.
-disable-model-invocation: yes
 ---
 
 # Make sure code is evergreen
