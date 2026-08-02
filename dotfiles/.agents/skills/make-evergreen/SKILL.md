@@ -8,6 +8,8 @@ disable-model-invocation: yes
 
 The objective is to make sure that the codebase is evergreen, i.e. it looks as if it were written with the current logic/features in mind from the start. This applies not only to the code, but also to tests, documentation, and anything else the codebase contains. Remove all convoluted naming, roundabout logic and pointless abstractions. Consider both the contents of files and their structure - renaming files, splitting or joining them, changing the directory structure etc. are all on the plate.
 
+Your work should be a pure refactor - behaviour should not change, except for fixing bugs or improving performance.
+
 ## The problem to address
 
 Coding agents tend to produce minimal-diff changes with backward compatibility in mind, but this is detrimental to the long-term maintainability of the codebase. For example:
