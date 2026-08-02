@@ -6,15 +6,36 @@ disable-model-invocation: yes
 
 # Make sure the repo is evergreen
 
-The objective is to make sure that the repo is evergreen, i.e. it looks as if it were written with the current logic/features in mind from the start. This applies to the code, file structure (directories, filenames), documentation, and tests. Remove all convoluted naming, roundabout logic and pointless abstractions.
+The objective is to make sure that the codebase is evergreen, i.e. it looks as if it were written with the current logic/features in mind from the start. This applies not only to the code, but also to tests, documentation, and anything else the codebase contains. Remove all convoluted naming, roundabout logic and pointless abstractions. Consider both the contents of files and their structure - renaming files, splitting or joining them, changing the directory structure etc. are all on the plate.
 
 ## The problem to address
 
-If you have recently made some edits, then this skill was probably invoked because agents tend to produce minimal-diff changes with backward compatibility in mind, and the user does not wish it to be so. Make sure what you did, and adjacent/related things, look as if they were written with the user's intent in mind from the start. For example:
+Coding agents tend to produce minimal-diff changes with backward compatibility in mind, but this is detrimental to the long-term maintainability of the codebase. For example:
 
-- You wanted to create a file called `gardening` where you would put cabbage-planting logic.
-- You discovered that a file with that name already existed and contained irrigation and soil-prep logic.
-- You decided to create a new file called `cabbage-planting` and put the cabbage-planting logic there.
-- In that case, this skill is asking you to consider (not necessarily do - it remains your judgement call) whether to create a `gardening` directory, place the original file into it while splitting it into `irrigation` and `soil-prep`, and move `cabbage-planting` in there too.
+- An agent wanted to create a file called `gardening` where it would put cabbage-planting logic.
+- The agent discovered that a file with that name already existed and contained irrigation and soil-prep logic.
+- It decided to create a new file called `cabbage-planting` and put the cabbage-planting logic there.
+- In that case, you should consider creating a `gardening` directory, place the original file into it while splitting it into `irrigation` and `soil-prep`, and move `cabbage-planting` in there too.
 
-If this skill was invoked out of the blue, apply changes to the entire codebase, or a part of it if told so.
+Coding agents also tend to add patches on top of existing content rather than changing the underlying structure and possibly removing unneeded content when that would be more appropriate. For example:
+
+- An agent was told to ensure cabbages always have water.
+- It decided to add logic which finds where cabbages grow and adds sprinklers there.
+- It did not notice that, once this is done, sprinklers must simply be present in the entire garden, so the code stayed peppered with special cases when it could be much simplified.
+- In this case, you should consider removing the special cases and simply ensuring that sprinklers are present in the entire garden.
+
+One more thing which coding agents notoriously do, especially when writing documentation but also when naming things, is to assume that future readers will be familiar with their conversation context, which of course they won't. For example:
+
+- An agent was told to implement a more efficient sprinkler system.
+- When drafting a plan for the implementation, it called the new system "sprinkler-system-v2".
+- When implementing the plan, it kept referring to "v2" even though future readers won't need to know which iteration it is.
+- In this case, you should consider removing the mentions of "v2".
+
+Note that when this skills tells you to consider doing something, it does not necessarily mean you should do it. It is your judgement call whether this is actually beneficial to the overall maintainability of the codebase and conformance to its coding standards. To help you in your decision, you may look at the history of the codebase - what the direction seems to be, where bugs appeared historically, what was easy/difficult to change, which pieces of it seem coupled and which seem independent, etc.
+
+## Scope
+
+This skill will often be invoked without telling you which part of the codebase it applies to. If so, here are some hints:
+
+- If you have recently made some edits, the scope is what you edited, plus adjacent/related content.
+- If this skill was invoked out of the blue entirely, the scope is the entire codebase.
