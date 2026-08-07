@@ -24,6 +24,14 @@ The non-leaf subagents should primarily think about architectural and DX questio
 
 The subagent is allowed to also touch other parts of the codebase where that is required for its work, but it should focus on its assigned piece. Because subagents may touch other parts, they must work in separate worktrees, so include instructions to set up a git branch and worktree under `/tmp` when launching each subagent. Tell the agent what to name its branch and worktree.
 
+## Guidelines for coordinating the work
+
+Because each subagent gets their own wortkree, they should be free to change any files they like. However, sometimes they might decide that a specific change they see a need for would be outside of their scope, and in that case they should report it to you. You may then choose when to launch a new subagent to handle it. That subagent should be free to judge whether the change is beneficial or not.
+
+If you have trouble retrieving the responses from subagents, you may view the transcript files that are automatically stored for each of them.
+
 ## Non-interactivity
 
 This skill is expected to take a long time to complete and the user will probably not monitor progress continuously. For this reason, you and the subagents should avoid interactivity - be it asking the user questions or prompting them to confirm actions.
+
+If this non-interactivity requirement causes some work to be blocked, report it to the user once the refactor is complete.
