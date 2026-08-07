@@ -37,7 +37,7 @@ Do not:
 
 - Use `## Summary` / `## Test plan` scaffolding or checklists.
 - Dump a file list, commit list, or blow-by-blow of what changed (the diff already has that).
-- Use nicknames or shorthand that someone who did not participate in creating the PR would not know.
+- Use nicknames or shorthand that someone who did not participate in creating the PR would not know. This is particularly important - make sure you are well-acquainted with what the likely reviewers probably know and don't know about.
 
 `gh` may append a "created by this and this agent" footer; do not add one yourself.
 
