@@ -26,6 +26,8 @@ The subagent is allowed to also touch other parts of the codebase where that is 
 
 ## Guidelines for coordinating the work
 
+Launch subagents asynchronously so that you are able to converse with the user while they work. Report progress whenever something happens, including an estimated elapsed and remaining time.
+
 Because each subagent gets their own wortkree, they should be free to change any files they like. However, sometimes they might decide that a specific change they see a need for would be outside of their scope, and in that case they should report it to you. You may then choose when to launch a new subagent to handle it. That subagent should be free to judge whether the change is beneficial or not.
 
 If you have trouble retrieving the responses from subagents, you may view the transcript files that are automatically stored for each of them.
