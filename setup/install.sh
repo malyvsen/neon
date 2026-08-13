@@ -12,6 +12,8 @@ sudo ln -sf /usr/share/fontconfig/conf.avail/46-ttf-twemoji-color.conf /etc/font
 
 curl -LsSf https://astral.sh/uv/install.sh | sh &&
 
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path &&
+
 curl -sS https://get.volta.sh | bash &&
 source $HOME/.profile &&  # gets volta in PATH
 volta install node &&
