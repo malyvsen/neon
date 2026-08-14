@@ -21,7 +21,7 @@ Launch a subagent to execute it. Unless told otherwise, use the same LLM for the
 The subagent's instructions should only include:
 
 - The plan, preferably by referring to its on-disk location if possible.
-- An instruction to create a worktree and execute the plan there, creating a new branch and committing to it. Tell the subagent what branch name to use.
+- An instruction to create a worktree and execute the plan there, creating a new branch from the one currently checked out in the main repo, and committing to it. Tell the subagent what branch name to use.
 
 ## When a subagent finishes executing a plan
 
