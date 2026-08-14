@@ -35,6 +35,8 @@ Tell the subagent to use the /intentional-rebase skill (mentioned by file path) 
 
 ## When a subagent finishes rebasing
 
+Ensure the main repo is clean. Subagents sometimes accidentally touch the main repo even while working in a worktree - if you are sure some changes were made by a subagent by accident, you can revert them, otherwise stash them and restore after checkout.
+
 Remove that subagent's worktree and check out its branch in the main repo. That subagent is done and will not be needed anymore.
 
 Afterwards, pick an agent that is still waiting to rebase - it is now its turn. You don't need to remember which subagents are waiting - these are simply those which still have a worktree. Pick the subagent whose worktree has the fewest conflicts with the main repo.
