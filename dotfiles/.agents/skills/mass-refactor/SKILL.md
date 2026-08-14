@@ -11,7 +11,7 @@ The objective is to make sure that the entire codebase is as clean as possible. 
 ## Step-by-step instructions
 
 1. Look at the current git state. If it is not clean, refuse to continue.
-2. Create a new branch and worktree for the refactor under `/tmp` if you're not on one already.
+2. Create a new branch and worktree for the refactor if you're not on one already.
 3. Identify a hirearchy of the refactor. The highest level is always the entire codebase, lower levels could be e.g. packages, apps, modules, docs directories etc. If needed, there can be further sublevels - a good leaf level is up to 3 thousand text lines in total (code, tests, documentation, configuration files - anything), but it can be fewer if it's nonetheless an independent architectural component.
 4. Execute the refactor using subagents hierarchically, in BFS order, starting from the highest level. Run the levels sequentially, but within each level run agents in parallel - no more than 5 at a time though. Note that the hierarchy may change if agents choose to restructure parts of the codebase - adapt to it.
    a. When a level is complete, launch a subagent which consolidates the changes from all the subagents on that level into the refactor branch. It is up to that subagent to decide how to best do this to achieve a clean git history.
@@ -22,7 +22,7 @@ Each subagent should be told to follow the `/make-evergreen` skill, referred to 
 
 The non-leaf subagents should primarily think about architectural and DX questions such as coupling between smaller elements and iteration speed. They are allowed to modify files, but should primarily be concerned with their structure. They are allowed to e.g. change the directory/package structure and names, including splitting/merging/removing/adding packages. Leaf-level subagents should actually focus on the code itself, although they too are allowed to change structure if needed.
 
-The subagent is allowed to also touch other parts of the codebase where that is required for its work, but it should focus on its assigned piece. Because subagents may touch other parts, they must work in separate worktrees, so include instructions to set up a git branch and worktree under `/tmp` when launching each subagent. Tell the agent what to name its branch and worktree.
+The subagent is allowed to also touch other parts of the codebase where that is required for its work, but it should focus on its assigned piece. Because subagents may touch other parts, they must work in separate worktrees, so include instructions to set up a git branch and worktree when launching each subagent. Tell the agent what to name its branch and worktree.
 
 ## Guidelines for coordinating the work
 
