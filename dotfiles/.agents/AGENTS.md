@@ -16,3 +16,7 @@ When writing a plan, make sure that every resulting commit is made evergreen. Th
 If the plan is broken up into multiple commits, each should be made evergreen separately. After the commit is made, the subagent should be launched, and once it's done, the changes it made should be folded into the original commit.
 
 Otherwise, the subagent should be run as a final step in the plan.
+
+## Isolated worktrees
+
+When creating a git worktree, put it in the environment's standard agent worktree directory by default - for example, in Cursor, this is `~/.cursor/worktrees`.
