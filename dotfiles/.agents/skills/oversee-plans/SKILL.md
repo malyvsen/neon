@@ -16,7 +16,7 @@ You will be managing subagents working in git worktrees. You will need to rememb
 
 ## When a user supplies a plan
 
-Launch a subagent to execute it.
+Launch a subagent to execute it. Unless told otherwise, use the same LLM for the subagent as the LLM you are using.
 
 The subagent's instructions should only include:
 
