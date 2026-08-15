@@ -1,0 +1,541 @@
+import {
+  Divider,
+  Grid,
+  H1,
+  H3,
+  Row,
+  Stack,
+  Stat,
+  Text,
+  useHostTheme,
+} from "cursor/canvas";
+
+type Category = {
+  id: string;
+  label: string;
+  light: string;
+  dark: string;
+};
+
+type Unit = {
+  id?: string;
+  name: string;
+  href?: string;
+  lines: Record<string, number>;
+  highlight?: string;
+  group?: { header: string; href?: string };
+};
+
+const pr184 = {
+  header: "#184 Extract the cue rack",
+  href: "https://github.com/example/marionette/pull/184",
+};
+const pr191 = {
+  header: "#191 Playbills and the fly-system clock",
+  href: "https://github.com/example/marionette/pull/191",
+};
+const onMain = { header: "main" };
+
+const work = {
+  title: "Backstage cue handoff",
+  subtitle:
+    "Take scene cues off the puppeteer's live line and make the handoff a contract the stage manager can trust.",
+  unitLabel: "Commits",
+  duration: "6 days",
+  linesBefore: 12_480,
+  period: "12–18 Apr 2026",
+  categories: [
+    { id: "code", label: "Product code", light: "#7A9EC4", dark: "#A8C4E0" },
+    { id: "config", label: "Configuration", light: "#C49490", dark: "#E0C0BA" },
+    { id: "tests", label: "Tests", light: "#7EAE8C", dark: "#A8D4B4" },
+    { id: "docs", label: "Documentation", light: "#D4B48A", dark: "#E8D0A8" },
+    { id: "tooling", label: "Development tooling", light: "#A894C4", dark: "#C8B8E0" },
+  ] satisfies Category[],
+  units: [
+    {
+      id: "a3f2c1",
+      name: "Extract CueRack from the live line",
+      lines: { code: 120, config: 8, tests: 10, docs: 4 },
+      group: pr184,
+    },
+    {
+      id: "8b91d0",
+      name: "Wire CueRack into the stage manager's desk",
+      lines: { code: 30, config: 8 },
+      group: pr184,
+    },
+    {
+      id: "c4e2a1",
+      name: "Cover dropped cues and curtain stalls",
+      lines: { code: 4, tests: 90 },
+      group: pr184,
+    },
+    {
+      id: "d17a3b",
+      name: "Document string-tension checks for the evening crew",
+      lines: { config: 5, docs: 36 },
+      group: pr191,
+    },
+    {
+      id: "f902e8",
+      name: "Rewrite scene encoding onto punch cards",
+      lines: { code: 760, config: 100, tests: 22, docs: 8 },
+      highlight:
+        "About ten times larger than neighboring commits, and almost entirely product code in a pull request otherwise about playbills and the fly-system clock.",
+      group: pr191,
+    },
+    {
+      id: "e4b3c2",
+      name: "Tighten the fly-system clock and lint config",
+      lines: { tooling: 12 },
+      group: pr191,
+    },
+    {
+      id: "91aa04",
+      name: "Drop unused gel-swap helpers",
+      lines: { code: -24, config: -4 },
+      group: pr191,
+    },
+    {
+      id: "b2c1d0",
+      name: "Fix playbill typo",
+      lines: { docs: 2 },
+      group: onMain,
+    },
+    {
+      id: "7e90ab",
+      name: "Bump default curtain fade to three seconds",
+      lines: { code: 2, config: 4 },
+      group: onMain,
+    },
+  ] satisfies Unit[],
+};
+
+const MONO = "ui-monospace, SFMono-Regular, Menlo, monospace";
+const categories = work.categories;
+
+function net(unit: Unit): number {
+  return categories.reduce((sum, { id }) => sum + (unit.lines[id] ?? 0), 0);
+}
+
+function formatDelta(n: number): string {
+  const abs = Math.abs(n).toLocaleString("en-US");
+  if (n > 0) return `+${abs}`;
+  if (n < 0) return `−${abs}`;
+  return "0";
+}
+
+function colorFor(id: string, kind: string): string {
+  const category = categories.find((entry) => entry.id === id)!;
+  return kind === "light" ? category.light : category.dark;
+}
+
+function niceCeil(n: number): number {
+  if (n <= 0) return 0;
+  const mag = 10 ** Math.floor(Math.log10(n));
+  const err = n / mag;
+  const nice = err <= 1 ? 1 : err <= 2 ? 2 : err <= 5 ? 5 : 10;
+  return nice * mag;
+}
+
+function axisLabel(unit: Unit & { n: number }): string {
+  const raw = unit.id ?? unit.name;
+  return raw.length > 10 ? `${raw.slice(0, 9)}…` : raw;
+}
+
+function grouped(units: Array<Unit & { n: number }>) {
+  const groups: { header?: string; href?: string; units: Array<Unit & { n: number }> }[] =
+    [];
+  for (const unit of units) {
+    const header = unit.group?.header;
+    const prev = groups[groups.length - 1];
+    if (prev && prev.header === header) prev.units.push(unit);
+    else groups.push({ header, href: unit.group?.href, units: [unit] });
+  }
+  return groups;
+}
+
+function cumulativeChart(items: Array<Unit & { n: number }>) {
+  const labels = ["0", ...items.map(axisLabel)];
+  const series: Record<string, number[]> = Object.fromEntries(
+    categories.map(({ id }) => [id, [0]]),
+  );
+  for (const unit of items) {
+    for (const { id } of categories) {
+      const prev = series[id][series[id].length - 1];
+      series[id].push(prev + (unit.lines[id] ?? 0));
+    }
+  }
+  return { labels, series };
+}
+
+const units = work.units.map((unit, i) => ({ ...unit, n: i + 1 }));
+const groups = grouped(units);
+const count = units.length;
+const netDelta = units.reduce((sum, unit) => sum + net(unit), 0);
+const indexWidth = `${String(count).length + 1}ch`;
+const idWidth = `${units.reduce((max, unit) => Math.max(max, unit.id?.length ?? 0), 0)}ch`;
+const chart = cumulativeChart(units);
+
+function Swatch({ id, size }: { id: string; size: number }) {
+  const theme = useHostTheme();
+  return (
+    <div
+      style={{
+        width: size,
+        height: size,
+        borderRadius: 2,
+        background: colorFor(id, theme.kind),
+        flexShrink: 0,
+      }}
+    />
+  );
+}
+
+function smoothPath(
+  values: number[],
+  xAt: (i: number) => number,
+  yAt: (v: number) => number,
+): string {
+  const pts = values.map((v, i) => ({ x: xAt(i), y: yAt(v) }));
+  if (pts.length < 2) return "";
+  const t = 0.22;
+  let d = `M ${pts[0].x} ${pts[0].y}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] ?? pts[i];
+    const p1 = pts[i];
+    const p2 = pts[i + 1];
+    const p3 = pts[i + 2] ?? p2;
+    d += ` C ${p1.x + (p2.x - p0.x) * t} ${p1.y + (p2.y - p0.y) * t}, ${p2.x - (p3.x - p1.x) * t} ${p2.y - (p3.y - p1.y) * t}, ${p2.x} ${p2.y}`;
+  }
+  return d;
+}
+
+function CategoryChart() {
+  const theme = useHostTheme();
+  const values = categories.flatMap(({ id }) => chart.series[id]);
+  const peak = Math.max(0, ...values);
+  const trough = Math.min(0, ...values);
+  const yMax = niceCeil(peak) || niceCeil(1);
+  const yMin =
+    trough < 0 ? -niceCeil(Math.abs(trough)) : -Math.round(yMax * 0.08);
+  const step = niceCeil(yMax / 4);
+  const ticks = [0];
+  for (let v = step; v <= yMax; v += step) ticks.push(v);
+  for (let v = -step; v >= yMin; v -= step) ticks.push(v);
+  ticks.sort((a, b) => a - b);
+
+  const width = 720;
+  const height = 220;
+  const left = 12 + String(yMax).length * 7;
+  const right = 12;
+  const top = 12;
+  const bottom = 28;
+  const plotW = width - left - right;
+  const plotH = height - top - bottom;
+  const n = chart.labels.length;
+  const axis = theme.text.tertiary;
+  const grid = theme.stroke.tertiary;
+  const xAt = (i: number) => left + (i / Math.max(n - 1, 1)) * plotW;
+  const yAt = (v: number) => top + plotH * (1 - (v - yMin) / (yMax - yMin));
+  const mark = n <= 20;
+
+  return (
+    <svg
+      viewBox={`0 0 ${width} ${height}`}
+      width="100%"
+      height={height}
+      role="img"
+      aria-label="Cumulative net lines of code by category"
+    >
+      {ticks.map((tick) => (
+        <g key={tick}>
+          <line
+            x1={left}
+            x2={width - right}
+            y1={yAt(tick)}
+            y2={yAt(tick)}
+            stroke={grid}
+            strokeWidth={tick === 0 ? 1.25 : 1}
+          />
+          <text
+            x={left - 8}
+            y={yAt(tick) + 3}
+            textAnchor="end"
+            fill={axis}
+            fontSize={10}
+          >
+            {tick}
+          </text>
+        </g>
+      ))}
+      <text
+        x={14}
+        y={top + plotH / 2}
+        textAnchor="middle"
+        fill={axis}
+        fontSize={10}
+        transform={`rotate(-90 14 ${top + plotH / 2})`}
+      >
+        Lines of code
+      </text>
+      {categories.map(({ id }) => (
+        <g key={id}>
+          <path
+            d={smoothPath(chart.series[id], xAt, yAt)}
+            fill="none"
+            stroke={colorFor(id, theme.kind)}
+            strokeWidth={2}
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          />
+          {mark
+            ? chart.series[id].map((value, i) => (
+                <circle
+                  key={`${id}-${i}`}
+                  cx={xAt(i)}
+                  cy={yAt(value)}
+                  r={2.5}
+                  fill={colorFor(id, theme.kind)}
+                />
+              ))
+            : null}
+        </g>
+      ))}
+      {chart.labels.map((label, i) => (
+        <text
+          key={`${label}-${i}`}
+          x={xAt(i)}
+          y={height - 8}
+          textAnchor="middle"
+          fill={axis}
+          fontSize={10}
+        >
+          {label}
+        </text>
+      ))}
+    </svg>
+  );
+}
+
+function CategoryLegend() {
+  return (
+    <Row gap={16} wrap>
+      {categories.map(({ id, label }) => (
+        <div key={id}>
+          <Row gap={6} align="center">
+            <Swatch id={id} size={10} />
+            <Text size="small" tone="secondary">
+              {label}
+            </Text>
+          </Row>
+        </div>
+      ))}
+    </Row>
+  );
+}
+
+function MixBar({ lines }: { lines: Unit["lines"] }) {
+  const theme = useHostTheme();
+  const entries = categories
+    .map((category) => ({
+      ...category,
+      value: lines[category.id] ?? 0,
+    }))
+    .filter((entry) => entry.value !== 0);
+  const total = entries.reduce((sum, entry) => sum + Math.abs(entry.value), 0);
+  if (total === 0) return null;
+  return (
+    <Stack gap={6}>
+      <div
+        style={{
+          display: "flex",
+          height: 6,
+          borderRadius: 2,
+          overflow: "hidden",
+          background: theme.fill.tertiary,
+        }}
+      >
+        {entries.map((entry) => (
+          <div
+            key={entry.id}
+            style={{
+              width: `${(Math.abs(entry.value) / total) * 100}%`,
+              background: colorFor(entry.id, theme.kind),
+            }}
+          />
+        ))}
+      </div>
+      <Row gap={12} wrap>
+        {entries.map((entry) => (
+          <div key={entry.id}>
+            <Row gap={6} align="center">
+              <Swatch id={entry.id} size={8} />
+              <Text size="small" tone="tertiary">
+                {entry.label} {formatDelta(entry.value)}
+              </Text>
+            </Row>
+          </div>
+        ))}
+      </Row>
+    </Stack>
+  );
+}
+
+function ArrowMark({ size, color }: { size: number; color: string }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 16 16"
+      fill="none"
+      aria-hidden
+    >
+      <path
+        d="M5 4.5h6.5V11M11.5 4.5 4.5 11.5"
+        stroke={color}
+        strokeWidth={1.4}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function Linked({ href, children }: { href?: string; children: string }) {
+  const theme = useHostTheme();
+  if (!href) return <>{children}</>;
+  return (
+    <a
+      href={href}
+      style={{
+        color: "inherit",
+        textDecoration: "none",
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+      }}
+    >
+      {children}
+      <ArrowMark size={13} color={theme.text.tertiary} />
+    </a>
+  );
+}
+
+function UnitRow({ unit }: { unit: Unit & { n: number } }) {
+  const theme = useHostTheme();
+  const row = (
+    <Row gap={12} align="start" justify="space-between">
+      <Row gap={12} align="start" style={{ minWidth: 0, flex: 1 }}>
+        <Text
+          size="small"
+          tone="tertiary"
+          style={{
+            width: indexWidth,
+            flexShrink: 0,
+            fontVariantNumeric: "tabular-nums",
+            paddingTop: 1,
+          }}
+        >
+          {unit.n}.
+        </Text>
+        {unit.id ? (
+          <Text
+            size="small"
+            weight="medium"
+            style={{
+              fontFamily: MONO,
+              width: idWidth,
+              flexShrink: 0,
+              paddingTop: 1,
+            }}
+          >
+            {unit.id}
+          </Text>
+        ) : null}
+        <Text style={{ minWidth: 0 }}>
+          <Linked href={unit.href}>{unit.name}</Linked>
+        </Text>
+      </Row>
+      <Text
+        weight="semibold"
+        style={{
+          fontVariantNumeric: "tabular-nums",
+          flexShrink: 0,
+          fontFamily: MONO,
+        }}
+      >
+        {formatDelta(net(unit))}
+      </Text>
+    </Row>
+  );
+
+  if (!unit.highlight) return row;
+
+  return (
+    <div
+      style={{
+        background: theme.fill.tertiary,
+        border: `1px solid ${theme.stroke.secondary}`,
+        borderRadius: 6,
+        padding: 12,
+      }}
+    >
+      <Stack gap={10}>
+        {row}
+        <Text size="small" tone="secondary">
+          {unit.highlight}
+        </Text>
+        <MixBar lines={unit.lines} />
+      </Stack>
+    </div>
+  );
+}
+
+export default function WorkOverview() {
+  return (
+    <Stack gap={28}>
+      <Stack gap={8}>
+        <H1>{work.title}</H1>
+        <Text tone="secondary">{work.subtitle}</Text>
+      </Stack>
+
+      <Grid columns={4} gap={16}>
+        <Stat value={String(count)} label={work.unitLabel} />
+        <Stat value={work.duration} label="Wall clock" />
+        <Stat value={work.linesBefore.toLocaleString("en-US")} label="Lines before" />
+        <Stat value={formatDelta(netDelta)} label="Net delta" />
+      </Grid>
+
+      <Stack gap={8}>
+        <CategoryChart />
+        <CategoryLegend />
+        <Text size="small" tone="tertiary">
+          Cumulative net lines by category · {work.period}
+        </Text>
+      </Stack>
+
+      <Stack gap={20}>
+        {groups.map((group, i) => (
+          <div key={group.header ?? i}>
+            <Stack gap={10}>
+              {i > 0 ? <Divider /> : null}
+              {group.header ? (
+                <H3>
+                  <Linked href={group.href}>{group.header}</Linked>
+                </H3>
+              ) : null}
+              <Stack gap={8}>
+                {group.units.map((unit) => (
+                  <div key={unit.id ?? `${unit.n}-${unit.name}`}>
+                    <UnitRow unit={unit} />
+                  </div>
+                ))}
+              </Stack>
+            </Stack>
+          </div>
+        ))}
+      </Stack>
+    </Stack>
+  );
+}
