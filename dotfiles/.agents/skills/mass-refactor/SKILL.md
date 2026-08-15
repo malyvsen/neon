@@ -15,6 +15,7 @@ The objective is to make sure that the entire codebase is as clean as possible. 
 3. Identify a hirearchy of the refactor. The highest level is always the entire codebase, lower levels could be e.g. packages, apps, modules, docs directories etc. If needed, there can be further sublevels - a good leaf level is up to 3 thousand text lines in total (code, tests, documentation, configuration files - anything), but it can be fewer if it's nonetheless an independent architectural component.
 4. Execute the refactor using subagents hierarchically, in BFS order, starting from the highest level. Run the levels sequentially, but within each level run agents in parallel - no more than 5 at a time though. Note that the hierarchy may change if agents choose to restructure parts of the codebase - adapt to it.
    a. When a level is complete, launch a subagent which consolidates the changes from all the subagents on that level into the refactor branch. It is up to that subagent to decide how to best do this to achieve a clean git history.
+5. When the refactor is complete, run the `/work-overview` skill.
 
 ## Guidelines for the refactoring subagents
 
