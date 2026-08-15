@@ -228,7 +228,9 @@ function CategoryChart() {
 
   const width = 720;
   const plotH = 180;
-  const left = 12 + String(yMax).length * 7;
+  const titleX = 12;
+  const tickW = Math.max(...ticks.map((tick) => String(tick).length)) * 7;
+  const left = titleX + 14 + tickW;
   const right = 12;
   const bottom = 28;
   const plotW = width - left - right;
@@ -333,12 +335,12 @@ function CategoryChart() {
           })
         : null}
       <text
-        x={14}
+        x={titleX}
         y={top + plotH / 2}
         textAnchor="middle"
         fill={axis}
         fontSize={10}
-        transform={`rotate(-90 14 ${top + plotH / 2})`}
+        transform={`rotate(-90 ${titleX} ${top + plotH / 2})`}
       >
         Lines of code
       </text>
