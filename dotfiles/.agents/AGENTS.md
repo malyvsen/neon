@@ -19,4 +19,6 @@ Otherwise, the subagent should be run as a final step in the plan.
 
 ## Isolated worktrees
 
-When creating a git worktree, put it in the environment's standard agent worktree directory by default - for example, in Cursor, this is `~/.cursor/worktrees`.
+Put new git worktrees in the environment's standard agent worktree directory (e.g. `~/.cursor/worktrees` in Cursor). Request full permissions on the first `git worktree add`.
+
+Once in a worktree, use full permissions for the shell - otherwise, the sandbox might provide stale views of files. Point every Read, Write, Grep, and shell call at the worktree path; tools default to the main repo.
