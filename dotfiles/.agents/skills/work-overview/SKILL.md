@@ -14,6 +14,8 @@ If the timeframe is not clear, ask.
 
 Categorize changed content. The default categories are product code, configuration, tests, documentation, and development tooling. Invent another category if one is clearly missing. A single file may belong to several categories — comments are documentation, and tests may live beside product code.
 
+When computing the delta in lines, count both sides of the diff, including files created or deleted as a whole. A deleted file's path is on the `---` line; `+++ /dev/null` only means the file is gone. If you take the path from `+++` alone, those removals never enter the tally.
+
 # Expected result
 
 A canvas. See [example.canvas.tsx](example.canvas.tsx) as a reference. In vertical order, the resulting canvas should contain:
