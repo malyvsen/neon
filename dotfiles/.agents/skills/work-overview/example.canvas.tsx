@@ -21,20 +21,17 @@ type Unit = {
   id?: string;
   name: string;
   href?: string;
-  lines: Record<string, number>;
+  lines: Partial<Record<string, number>>;
   highlight?: string;
-  group?: { header: string; href?: string };
 };
 
-const pr184 = {
-  header: "#184 Extract the cue rack",
-  href: "https://github.com/example/marionette/pull/184",
+type Group = {
+  header?: string;
+  href?: string;
+  units: Unit[];
 };
-const pr191 = {
-  header: "#191 Playbills and the fly-system clock",
-  href: "https://github.com/example/marionette/pull/191",
-};
-const onMain = { header: "main" };
+
+type Numbered = Unit & { n: number };
 
 const work = {
   title: "Backstage cue handoff",
@@ -51,64 +48,72 @@ const work = {
     { id: "docs", label: "Documentation", light: "#D4B48A", dark: "#E8D0A8" },
     { id: "tooling", label: "Development tooling", light: "#A894C4", dark: "#C8B8E0" },
   ] satisfies Category[],
-  units: [
+  groups: [
     {
-      id: "a3f2c1",
-      name: "Extract CueRack from the live line",
-      lines: { code: 120, config: 8, tests: 10, docs: 4 },
-      group: pr184,
+      header: "#184 Extract the cue rack",
+      href: "https://github.com/example/marionette/pull/184",
+      units: [
+        {
+          id: "a3f2c1",
+          name: "Extract CueRack from the live line",
+          lines: { code: 120, config: 8, tests: 10, docs: 4 },
+        },
+        {
+          id: "8b91d0",
+          name: "Wire CueRack into the stage manager's desk",
+          lines: { code: 30, config: 8 },
+        },
+        {
+          id: "c4e2a1",
+          name: "Cover dropped cues and curtain stalls",
+          lines: { code: 4, tests: 90 },
+        },
+      ],
     },
     {
-      id: "8b91d0",
-      name: "Wire CueRack into the stage manager's desk",
-      lines: { code: 30, config: 8 },
-      group: pr184,
+      header: "#191 Playbills and the fly-system clock",
+      href: "https://github.com/example/marionette/pull/191",
+      units: [
+        {
+          id: "d17a3b",
+          name: "Document string-tension checks for the evening crew",
+          lines: { config: 5, docs: 36 },
+        },
+        {
+          id: "f902e8",
+          name: "Rewrite scene encoding onto punch cards",
+          lines: { code: 760, config: 100, tests: 22, docs: 8 },
+          highlight:
+            "About ten times larger than neighboring commits, and almost entirely product code in a pull request otherwise about playbills and the fly-system clock.",
+        },
+        {
+          id: "e4b3c2",
+          name: "Tighten the fly-system clock and lint config",
+          lines: { tooling: 12 },
+        },
+        {
+          id: "91aa04",
+          name: "Drop unused gel-swap helpers",
+          lines: { code: -24, config: -4 },
+        },
+      ],
     },
     {
-      id: "c4e2a1",
-      name: "Cover dropped cues and curtain stalls",
-      lines: { code: 4, tests: 90 },
-      group: pr184,
+      header: "main",
+      units: [
+        {
+          id: "b2c1d0",
+          name: "Fix playbill typo",
+          lines: { docs: 2 },
+        },
+        {
+          id: "7e90ab",
+          name: "Bump default curtain fade to three seconds",
+          lines: { code: 2, config: 4 },
+        },
+      ],
     },
-    {
-      id: "d17a3b",
-      name: "Document string-tension checks for the evening crew",
-      lines: { config: 5, docs: 36 },
-      group: pr191,
-    },
-    {
-      id: "f902e8",
-      name: "Rewrite scene encoding onto punch cards",
-      lines: { code: 760, config: 100, tests: 22, docs: 8 },
-      highlight:
-        "About ten times larger than neighboring commits, and almost entirely product code in a pull request otherwise about playbills and the fly-system clock.",
-      group: pr191,
-    },
-    {
-      id: "e4b3c2",
-      name: "Tighten the fly-system clock and lint config",
-      lines: { tooling: 12 },
-      group: pr191,
-    },
-    {
-      id: "91aa04",
-      name: "Drop unused gel-swap helpers",
-      lines: { code: -24, config: -4 },
-      group: pr191,
-    },
-    {
-      id: "b2c1d0",
-      name: "Fix playbill typo",
-      lines: { docs: 2 },
-      group: onMain,
-    },
-    {
-      id: "7e90ab",
-      name: "Bump default curtain fade to three seconds",
-      lines: { code: 2, config: 4 },
-      group: onMain,
-    },
-  ] satisfies Unit[],
+  ] as Group[],
 };
 
 const MONO = "ui-monospace, SFMono-Regular, Menlo, monospace";
@@ -138,44 +143,40 @@ function niceCeil(n: number): number {
   return nice * mag;
 }
 
-function axisLabel(unit: Unit & { n: number }): string {
+function axisLabel(unit: Numbered): string {
   const raw = unit.id ?? unit.name;
   return raw.length > 10 ? `${raw.slice(0, 9)}…` : raw;
 }
 
-function grouped(units: Array<Unit & { n: number }>) {
-  const groups: { header?: string; href?: string; units: Array<Unit & { n: number }> }[] =
-    [];
-  for (const unit of units) {
-    const header = unit.group?.header;
-    const prev = groups[groups.length - 1];
-    if (prev && prev.header === header) prev.units.push(unit);
-    else groups.push({ header, href: unit.group?.href, units: [unit] });
-  }
-  return groups;
+function groupLabel(header: string | undefined, width: number) {
+  if (!header) return;
+  if (width >= 120) return header;
+  if (width >= 36) return header.split(/\s+/)[0];
 }
 
-function cumulativeChart(items: Array<Unit & { n: number }>) {
-  const labels = ["0", ...items.map(axisLabel)];
-  const series: Record<string, number[]> = Object.fromEntries(
-    categories.map(({ id }) => [id, [0]]),
-  );
-  for (const unit of items) {
-    for (const { id } of categories) {
-      const prev = series[id][series[id].length - 1];
-      series[id].push(prev + (unit.lines[id] ?? 0));
-    }
-  }
-  return { labels, series };
-}
-
-const units = work.units.map((unit, i) => ({ ...unit, n: i + 1 }));
-const groups = grouped(units);
+const groups = work.groups.map((group, gi, all) => {
+  const start = all.slice(0, gi).reduce((sum, entry) => sum + entry.units.length, 0);
+  return {
+    ...group,
+    units: group.units.map((unit, i) => ({ ...unit, n: start + i + 1 })),
+  };
+});
+const units = groups.flatMap((group) => group.units);
 const count = units.length;
 const netDelta = units.reduce((sum, unit) => sum + net(unit), 0);
 const indexWidth = `${String(count).length + 1}ch`;
 const idWidth = `${units.reduce((max, unit) => Math.max(max, unit.id?.length ?? 0), 0)}ch`;
-const chart = cumulativeChart(units);
+
+const chartLabels = ["0", ...units.map(axisLabel)];
+const chartSeries: Record<string, number[]> = Object.fromEntries(
+  categories.map(({ id }) => [id, [0]]),
+);
+for (const unit of units) {
+  for (const { id } of categories) {
+    const prev = chartSeries[id][chartSeries[id].length - 1];
+    chartSeries[id].push(prev + (unit.lines[id] ?? 0));
+  }
+}
 
 function Swatch({ id, size }: { id: string; size: number }) {
   const theme = useHostTheme();
@@ -213,7 +214,7 @@ function smoothPath(
 
 function CategoryChart() {
   const theme = useHostTheme();
-  const values = categories.flatMap(({ id }) => chart.series[id]);
+  const values = categories.flatMap(({ id }) => chartSeries[id]);
   const peak = Math.max(0, ...values);
   const trough = Math.min(0, ...values);
   const yMax = niceCeil(peak) || niceCeil(1);
@@ -226,28 +227,53 @@ function CategoryChart() {
   ticks.sort((a, b) => a - b);
 
   const width = 720;
-  const height = 220;
+  const plotH = 180;
   const left = 12 + String(yMax).length * 7;
   const right = 12;
-  const top = 12;
   const bottom = 28;
   const plotW = width - left - right;
-  const plotH = height - top - bottom;
-  const n = chart.labels.length;
+  const n = chartLabels.length;
   const axis = theme.text.tertiary;
   const grid = theme.stroke.tertiary;
+  const rule = theme.stroke.secondary;
+  const mark = n <= 20;
+  const showGroups = groups.length > 1;
+
+  const bands: { x: number; w: number; href?: string; label?: string }[] = [];
+  let cursor = 0;
+  for (const group of groups) {
+    const w = (group.units.length / count) * plotW;
+    bands.push({
+      x: left + (cursor / count) * plotW,
+      w,
+      href: group.href,
+      label: groupLabel(group.header, w),
+    });
+    cursor += group.units.length;
+  }
+  const labelH = showGroups && bands.some((band) => band.label) ? 18 : 0;
+  const top = 12 + labelH;
+  const height = top + plotH + bottom;
   const xAt = (i: number) => left + (i / Math.max(n - 1, 1)) * plotW;
   const yAt = (v: number) => top + plotH * (1 - (v - yMin) / (yMax - yMin));
-  const mark = n <= 20;
 
   return (
     <svg
       viewBox={`0 0 ${width} ${height}`}
       width="100%"
-      height={height}
+      style={{ height: "auto", display: "block" }}
       role="img"
       aria-label="Cumulative net lines of code by category"
     >
+      {showGroups ? (
+        <defs>
+          {bands.map((band, i) => (
+            <clipPath key={i} id={`group-label-${i}`}>
+              <rect x={band.x} y={0} width={Math.max(band.w, 0)} height={labelH} />
+            </clipPath>
+          ))}
+        </defs>
+      ) : null}
       {ticks.map((tick) => (
         <g key={tick}>
           <line
@@ -269,6 +295,43 @@ function CategoryChart() {
           </text>
         </g>
       ))}
+      {showGroups
+        ? bands.slice(0, -1).map((band, i) => (
+            <line
+              key={`rule-${i}`}
+              x1={band.x + band.w}
+              x2={band.x + band.w}
+              y1={top}
+              y2={top + plotH}
+              stroke={rule}
+              strokeWidth={1}
+            />
+          ))
+        : null}
+      {showGroups
+        ? bands.map((band, i) => {
+            if (!band.label) return null;
+            const label = (
+              <text
+                x={band.x + band.w / 2}
+                y={12}
+                textAnchor="middle"
+                fill={axis}
+                fontSize={10}
+                clipPath={`url(#group-label-${i})`}
+              >
+                {band.label}
+              </text>
+            );
+            return band.href ? (
+              <a key={`label-${i}`} href={band.href}>
+                {label}
+              </a>
+            ) : (
+              <g key={`label-${i}`}>{label}</g>
+            );
+          })
+        : null}
       <text
         x={14}
         y={top + plotH / 2}
@@ -282,7 +345,7 @@ function CategoryChart() {
       {categories.map(({ id }) => (
         <g key={id}>
           <path
-            d={smoothPath(chart.series[id], xAt, yAt)}
+            d={smoothPath(chartSeries[id], xAt, yAt)}
             fill="none"
             stroke={colorFor(id, theme.kind)}
             strokeWidth={2}
@@ -290,7 +353,7 @@ function CategoryChart() {
             strokeLinecap="round"
           />
           {mark
-            ? chart.series[id].map((value, i) => (
+            ? chartSeries[id].map((value, i) => (
                 <circle
                   key={`${id}-${i}`}
                   cx={xAt(i)}
@@ -302,18 +365,20 @@ function CategoryChart() {
             : null}
         </g>
       ))}
-      {chart.labels.map((label, i) => (
-        <text
-          key={`${label}-${i}`}
-          x={xAt(i)}
-          y={height - 8}
-          textAnchor="middle"
-          fill={axis}
-          fontSize={10}
-        >
-          {label}
-        </text>
-      ))}
+      {mark
+        ? chartLabels.map((label, i) => (
+            <text
+              key={`${label}-${i}`}
+              x={xAt(i)}
+              y={height - 8}
+              textAnchor="middle"
+              fill={axis}
+              fontSize={10}
+            >
+              {label}
+            </text>
+          ))
+        : null}
     </svg>
   );
 }
@@ -422,7 +487,7 @@ function Linked({ href, children }: { href?: string; children: string }) {
   );
 }
 
-function UnitRow({ unit }: { unit: Unit & { n: number } }) {
+function UnitRow({ unit }: { unit: Numbered }) {
   const theme = useHostTheme();
   const row = (
     <Row gap={12} align="start" justify="space-between">
