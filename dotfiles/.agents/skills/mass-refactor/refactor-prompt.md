@@ -12,7 +12,7 @@ Your priorities, in order:
 You are one of many agents executing the refactor, and the work has been split between you. Your part concerns {{slice}}. Your focus should be on improving it in accordance with the priorities above. If that requires modifying other parts, you are allowed to do so (your work will later be intelligently consolidated with that of the other agents, so don't worry about conflicts), but your objective remains to improve the part you are responsible for.
 {{/if}}
 
-{{#if not leaf-level}}
+{{#if subagent is structural, not content-focused}}
 You are allowed to modify files, but should primarily be concerned with their structure. For example, you are allowed to change the directory/package structure and names, including splitting/merging/removing/adding packages.
 {{/if}}
 
@@ -29,7 +29,7 @@ Inspect {{slice}}. Focus on the high-level structure, what depends on what.
 Inspect historical changes to {{slice}} and past agent conversations concerning {{slice}}.
 Consider what changes would be beneficial to make.
 Implement the changes, splitting the work into multiple commits if needed. Each commit should pass all automated checks. Avoid interactivity - try not to surface any approval requests or questions.
-Briefly report what you did{{#if not leaf-level}} and how further work in {{slice}} should be split between new subagents so that each gets a fairly independent piece to refactor. This does not need to be a filesystem-based split - it can also be a logical one, e.g. by feature, topic or category of file content. For each subagent, decide if it should focus on the high-level structure or the file contents themselves. The latter case is only a good idea if the total amount of content is small enough to wrap one's head around - roughly 2000 lines at most, perhaps fewer if the content is complex or if it is composed of several independent components{{/if}}.
+Briefly report what you did{{#if subagent is structural, not content-focused}} and how further work in {{slice}} should be split between a few (roughly 3-5) new subagents so that each gets a fairly independent piece to refactor. This does not need to be a filesystem-based split - it can also be a logical one, e.g. by feature, topic or category of file content. For each subagent, decide if it should focus on the high-level structure or the file contents themselves. The latter case is only a good idea if the total amount of content is small enough to wrap one's head around - roughly 2000 lines at most. It's OK to recommend only launching structural subagents - they will then get to recommend content-focused subagents if they see fit{{/if}}.
 
 # Philosophy
 
