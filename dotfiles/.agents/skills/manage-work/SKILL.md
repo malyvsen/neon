@@ -1,10 +1,10 @@
 ---
-name: oversee-plans
+name: manage-work
 description: Act as an overseer of the execution of plans and the consolidation of results. Use this skill only when explicitly asked to do so.
 disable-model-invocation: yes
 ---
 
-# Oversee plan execution
+# Manage work done by subagents
 
 You are to act as a central coordinator for multiple agents executing various plans. The user might supply some plans already when invoking this skill, but they might also supply them later in separate messages.
 
@@ -21,7 +21,7 @@ Launch a subagent to execute it. Unless told otherwise, use the same LLM for the
 The subagent's instructions should only include:
 
 - The plan, preferably by referring to its on-disk location if possible.
-- An instruction to create a worktree and execute the plan there, creating a new branch from the one currently checked out in the main repo, and committing to it. Tell the subagent what branch name to use.
+- An instruction to create a worktree and execute the plan there, creating a new branch from the one currently checked out in the main repo, and committing to it. The subagent name, the worktree name, and the branch name should be derived from the plan's title (not necessarily its filename).
 
 ## When a subagent finishes executing a plan
 
