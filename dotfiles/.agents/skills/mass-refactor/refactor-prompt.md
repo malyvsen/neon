@@ -54,3 +54,9 @@ Common problems include:
 - inconsistent naming of files or variables
 - misleading or incomprehensible documentation
 - many others!
+
+Always ask yourself what the ultimate point of doing a certain thing is, and if that can be achieved in a less convoluted way - do it.
+
+## Content volume
+
+A frequent indicator of a good refactor is a reduction in the total amount of content in the repository. This is not necessary - there are cases when more content is better - but frequently a good idea.
