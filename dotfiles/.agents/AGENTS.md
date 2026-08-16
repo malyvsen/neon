@@ -13,9 +13,9 @@ When a bug is reported, write tests which would have caught it first, verify tha
 
 When writing a plan, make sure that every resulting commit is made evergreen. This should be done by invoking a subagent with the same model/reasoning power as yourself with the `/make-evergreen` skill (referred to by its file path). Give that subagent only brief context on the intent of the work. Do not pass anything else (e.g. coding rules or file lists) — it should discover those itself.
 
-If the plan is broken up into multiple commits, each should be made evergreen separately. After the commit is made, the subagent should be launched, and once it's done, the changes it made should be folded into the original commit.
+Each commit in the plan should be made evergreen separately. Just before the commit is made, the subagent should be launched, and once it's done, its changes should be included in the commit, unless you deem them counterproductive.
 
-Otherwise, the subagent should be run as a final step in the plan.
+If the plan does not call for committing, run the subagent as its final step.
 
 ## Isolated worktrees
 
