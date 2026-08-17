@@ -20,7 +20,9 @@ You will be given work to do, usually in the form of plan files. The user might 
 
 For any work that is not a trivial one-off request from the user, you should launch a subagent with the same LLM configuration as yourself. The prompt you launch it with should be a filled-in version of the template at `work-prompt.md`, and the subagent's name should match the intent of the work (not necessarily a plan's filename).
 
-When a subagent finishes, it enters a rebase queue you should keep track of. The first subagent in the rebase queue should be given the instructions in `rebase-prompt.md` to rebase its branch onto the one you're managing. The remaining subagents in the queue should wait - don't send them messages.
+When a subagent finishes, it enters a prioritized rebase queue you should keep track of. Priority is given to subagents whose work was requested by the user directly.
+
+The first subagent in the rebase queue should be given the instructions in `rebase-prompt.md` to rebase its branch onto the one you're managing. The remaining subagents in the queue should wait - don't send them messages.
 
 Ensure the main repo is clean before each rebase. Subagents sometimes accidentally touch the main repo even while working in a worktree - if you are sure some changes were made by a subagent by accident, you can revert them, otherwise stash them and restore after fast-forward.
 
