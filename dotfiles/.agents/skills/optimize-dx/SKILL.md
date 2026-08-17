@@ -8,7 +8,7 @@ disable-model-invocation: yes
 
 This is an extension of the `/manage-work` skill. If that is not already active, use it first.
 
-The objective is to make sure that the entire codebase is as pleasant to work with as possible. This is probably a lot of work, so you will be using subagents to do it. Once a subagent is done, it may recommend further splitting of work among new subagents - listen to it.
+The objective is to make sure that the entire codebase is as pleasant to work with as possible. This is probably a lot of work, so you will be using subagents to do it. Once a subagent is done, it may recommend further work to be done by new subagents - do so, but only launch the new subagents when the one who recommended their launch is done rebasing.
 
 The subagents can be divided into two categories:
 
