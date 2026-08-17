@@ -1,42 +1,31 @@
 ---
 name: manage-work
-description: Act as an overseer of the execution of plans and the consolidation of results. Use this skill only when explicitly asked to do so.
+description: Act as an overseer for subagents. Use this skill only when explicitly asked to do so.
 disable-model-invocation: yes
 ---
 
 # Manage work done by subagents
 
-You are to act as a central coordinator for multiple agents executing various plans. The user might supply some plans already when invoking this skill, but they might also supply them later in separate messages.
-
-## General guidelines
+You are to act as a central coordinator for multiple subagents executing and consolidating various work.
 
 As the central coordinator, you should stay responsive. This means that you should not wait for subagents or commands to finish - everything should be done asynchronously.
 
-You will be managing subagents working in git worktrees. You will need to remember which worktree is currently being rebased, if any.
+# Setup instructions
 
-## When a user supplies a plan
+Start by creating a new branch which you will be responsible for. If the intent of the work is known, name it appropriately, otherwise.
 
-Launch a subagent to execute it. Unless told otherwise, use the same LLM for the subagent as the LLM you are using.
+# Management instructions
 
-The subagent's instructions should only include:
+You will be given work to do, usually in the form of plan files. The user might supply work immediately when invoking this skill, but they may also supply it in subsequent messages.
 
-- The plan, preferably by referring to its on-disk location if possible.
-- An instruction to create a worktree and execute the plan there, creating a new branch from the one currently checked out in the main repo, and committing to it. The subagent name, the worktree name, and the branch name should be derived from the plan's title (not necessarily its filename).
+For any work that is not a trivial one-off request from the user, you should launch a subagent with the same LLM configuration as yourself. The prompt you launch it with should be a filled-in version of the template at `work-prompt.md`, and the subagent's name should match the intent of the work (not necessarily a plan's filename).
 
-## When a subagent finishes executing a plan
+When a subagent finishes, it enters a rebase queue you should keep track of. The first subagent in the rebase queue should be given the instructions in `rebase-prompt.md` to rebase its branch onto the one you're managing. The remaining subagents in the queue should wait - don't send them messages.
 
-If no worktree is currently being rebased, it can be that subagent's turn to rebase immediately - see below.
+Ensure the main repo is clean before each rebase. Subagents sometimes accidentally touch the main repo even while working in a worktree - if you are sure some changes were made by a subagent by accident, you can revert them, otherwise stash them and restore after fast-forward.
 
-If a worktree is currently being rebased, the subagent will need to wait. Don't give it any further instructions until it is its turn to rebase.
+Once a subagent is done rebasing, fast-forward the branch you're managing to its branch, remove its worktree and branch, and only then tell the next subagent in the queue to start rebasing.
 
-## When it is a subagent's turn to rebase
+# Constraints
 
-Tell the subagent to use the /intentional-rebase skill (mentioned by file path) and rebase on top of the branch the main repo is currently on.
-
-## When a subagent finishes rebasing
-
-Ensure the main repo is clean. Subagents sometimes accidentally touch the main repo even while working in a worktree - if you are sure some changes were made by a subagent by accident, you can revert them, otherwise stash them and restore after checkout.
-
-Remove that subagent's worktree and check out its branch in the main repo. That subagent is done and will not be needed anymore.
-
-Afterwards, pick an agent that is still waiting to rebase - it is now its turn. You don't need to remember which subagents are waiting - these are simply those which still have a worktree. Pick the subagent whose worktree has the most conflicts with the main repo.
+No more than 10 subagents should be actively running. If this limit is reached, prioritize rebasing over new work.
