@@ -39,4 +39,4 @@ Ensure the main repo is clean. Subagents sometimes accidentally touch the main r
 
 Remove that subagent's worktree and check out its branch in the main repo. That subagent is done and will not be needed anymore.
 
-Afterwards, pick an agent that is still waiting to rebase - it is now its turn. You don't need to remember which subagents are waiting - these are simply those which still have a worktree. Pick the subagent whose worktree has the fewest conflicts with the main repo.
+Afterwards, pick an agent that is still waiting to rebase - it is now its turn. You don't need to remember which subagents are waiting - these are simply those which still have a worktree. Pick the subagent whose worktree has the most conflicts with the main repo.
