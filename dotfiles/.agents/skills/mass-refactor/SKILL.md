@@ -16,7 +16,7 @@ The objective is to make sure that the entire codebase is as clean as possible. 
 4. The subagent should report how to split work further. Launch new subagents according to its recommendation.
    a. When a subagent finishes, it enters a rebase queue you should keep track of.
    b. The first subagent in the rebase queue should be given the instructions in `rebase-prompt.md` to rebase its branch onto `mass-refactor`. The remaining subagents in the queue should wait - don't send them messages.
-   c. Once a subagent is done rebasing, fast-forward `mass-refactor` to its branch, remove its worktree, and only then tell the next subagent in the queue to start rebasing.
+   c. Once a subagent is done rebasing, fast-forward `mass-refactor` to its branch, remove its worktree and branch, and only then tell the next subagent in the queue to start rebasing.
    d. Subagents may recommend further splitting of work among new subagents. Once the recommending subagent's changes are on `mass-refactor`, launch the new subagents.
 5. When the refactor is complete, run the `/work-overview` skill over the `mass-refactor` branch.
 
