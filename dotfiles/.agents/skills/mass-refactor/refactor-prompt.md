@@ -54,6 +54,7 @@ Common problems include:
 - inconsistent naming of files or variables
 - misleading or incomprehensible documentation
 - flaky or slow tests
+- confusing error messages
 - many others!
 
 Always ask yourself what the ultimate point of doing a certain thing is, and if that can be achieved in a less convoluted way - do it.
