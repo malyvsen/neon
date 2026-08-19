@@ -30,4 +30,4 @@ Once a subagent is done rebasing, fast-forward the branch you're managing to its
 
 # Constraints
 
-No more than 10 subagents should be actively running. If this limit is reached, prioritize rebasing over new work.
+The length of the rebase queue plus the number of subagents doing implementation work should never exceed 5. If this limit is reached, prioritize rebasing over new work.
