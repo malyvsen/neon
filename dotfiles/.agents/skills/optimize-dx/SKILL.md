@@ -1,10 +1,10 @@
 ---
 name: optimize-dx
-description: Have subagents optimize the developer experience. Use when explicitly asked to do so.
-disable-model-invocation: yes
+description: Runs subagents that improve developer experience across structure, iteration speed, and onboarding. Use when optimizing DX, improving the developer experience, or making the repo faster to iterate in.
+disable-model-invocation: true
 ---
 
-# Have subagents optimize the developer experience
+# Optimize the developer experience
 
 This is an extension of the `/manage-work` skill. If that is not already active, use it first.
 

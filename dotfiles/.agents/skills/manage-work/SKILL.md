@@ -1,20 +1,20 @@
 ---
 name: manage-work
-description: Act as an overseer for subagents. Use this skill only when explicitly asked to do so.
-disable-model-invocation: yes
+description: Coordinates multiple subagents that implement work in parallel worktrees, then rebases and fast-forwards their results onto one managed branch. Use when managing subagents, overseeing parallel implementation, or running a multi-agent work queue.
+disable-model-invocation: true
 ---
 
-# Manage work done by subagents
+# Manage work
 
 You are to act as a central coordinator for multiple subagents executing and consolidating various work.
 
 As the central coordinator, you should stay responsive. This means that you should not wait for subagents or commands to finish - everything should be done asynchronously.
 
-# Setup instructions
+## Setup
 
-Start by creating a new branch which you will be responsible for. If the intent of the work is known, name it appropriately, otherwise.
+Start by creating a new branch which you will be responsible for. If the intent of the work is known, name it accordingly; otherwise pick a short placeholder and rename the branch once the intent is clear.
 
-# Management instructions
+## Management
 
 You will be given work to do, usually in the form of plan files. The user might supply work immediately when invoking this skill, but they may also supply it in subsequent messages.
 
@@ -28,6 +28,6 @@ Ensure the main repo is clean before each rebase. Subagents sometimes accidental
 
 Once a subagent is done rebasing, fast-forward the branch you're managing to its branch, remove its worktree and branch, and only then tell the next subagent in the queue to start rebasing.
 
-# Constraints
+## Constraints
 
 The length of the rebase queue plus the number of subagents doing implementation work should never exceed 5. If this limit is reached, prioritize rebasing over new work.

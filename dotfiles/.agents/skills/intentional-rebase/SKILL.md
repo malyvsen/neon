@@ -1,7 +1,7 @@
 ---
 name: intentional-rebase
-description: Rebase while ensuring the intent of all commits is preserved.
-disable-model-invocation: yes
+description: Rebases a branch or stack onto a target branch while preserving each commit's original intent. Use when rebasing, restacking branches, or updating a stack onto main.
+disable-model-invocation: true
 ---
 
 # Intentional rebase
