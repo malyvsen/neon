@@ -7,4 +7,4 @@ disable-model-invocation: true
 # Plan UI
 
 1. Start in agent mode. Copy [examples/example.canvas.tsx](examples/example.canvas.tsx) and edit it in place to produce a mockup of the proposed new UI, paying attention to mimic the app's styling.
-2. Once the user is happy with the mockup, switch to plan mode and write a plan for implementing the changes in code. Refer to the mockup in the canvas by its file path.
+2. Once the user is happy with the mockup, switch to plan mode and write a plan for implementing the changes in code, following `/write-plan`. Refer to the mockup in the canvas by its file path.
