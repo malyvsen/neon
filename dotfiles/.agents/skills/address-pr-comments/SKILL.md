@@ -1,10 +1,10 @@
 ---
 name: address-pr-comments
-description: Help the user address comments on a PR.
-disable-model-invocation: yes
+description: Reviews and resolves pull request review comments with the user, one comment at a time. Use when addressing PR comments, review feedback, or GitHub review threads.
+disable-model-invocation: true
 ---
 
-# Help the user address comments on a PR
+# Address PR comments
 
 1. List the commits on the current branch with `git --no-pager log --oneline --decorate origin/HEAD..HEAD`.
 2. Look at the comments on the PR from the current branch.

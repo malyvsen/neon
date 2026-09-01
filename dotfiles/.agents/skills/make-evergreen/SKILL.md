@@ -1,10 +1,10 @@
 ---
 name: make-evergreen
-description: Make sure the repo is evergreen. Use when explicitly asked to do so.
-disable-model-invocation: yes
+description: Refactors the codebase so it reads as if the current design had been there from the start, without leftover names, shims, or conversation-specific context. Use when making a change evergreen, cleaning up after an agent, or removing leftover versioned or compatibility structure.
+disable-model-invocation: true
 ---
 
-# Make sure the repo is evergreen
+# Make evergreen
 
 The objective is to make sure that the codebase is evergreen, i.e. it looks as if it were written with the current logic/features in mind from the start. This applies not only to the code, but also to tests, documentation, and anything else the codebase contains. Remove all convoluted naming, roundabout logic and pointless abstractions. Consider both the contents of files and their structure - renaming files, splitting or joining them, changing the directory structure etc. are all on the plate.
 
@@ -33,7 +33,7 @@ One more thing which coding agents notoriously do, especially when writing docum
 - When implementing the plan, it kept referring to "v2" even though future readers won't need to know which iteration it is.
 - In this case, you should consider removing the mentions of "v2".
 
-Note that when this skills tells you to consider doing something, it does not necessarily mean you should do it. It is your judgement call whether this is actually beneficial to the overall maintainability of the codebase and conformance to its coding standards. To help you in your decision, you may look at the history of the codebase - what the direction seems to be, where bugs appeared historically, what was easy/difficult to change, which pieces of it seem coupled and which seem independent, etc.
+Note that when this skill tells you to consider doing something, it does not necessarily mean you should do it. It is your judgement call whether this is actually beneficial to the overall maintainability of the codebase and conformance to its coding standards. To help you in your decision, you may look at the history of the codebase - what the direction seems to be, where bugs appeared historically, what was easy/difficult to change, which pieces of it seem coupled and which seem independent, etc.
 
 ## Scope
 

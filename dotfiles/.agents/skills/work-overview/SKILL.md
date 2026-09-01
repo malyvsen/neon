@@ -1,10 +1,10 @@
 ---
 name: work-overview
-description: Provide a rundown of some work done in the codebase. The objective is to help the user judge whether the added complexity of a set of changes warrants their benefit.
-disable-model-invocation: no
+description: Renders a canvas rundown of commits or pull requests so the user can judge whether added complexity was worth the benefit. Use when reviewing the complexity of a set of changes, comparing line-delta cost to benefit, or asking for a work overview of commits or PRs.
+disable-model-invocation: false
 ---
 
-# Introduction
+# Work overview
 
 Present a rundown of work in the codebase, split into units of work, so the user can judge whether the added complexity was worth it.
 
@@ -16,7 +16,7 @@ Categorize changed content. The default categories are product code, configurati
 
 When computing the delta in lines, count both sides of the diff, including files created or deleted as a whole. A deleted file's path is on the `---` line; `+++ /dev/null` only means the file is gone. If you take the path from `+++` alone, those removals never enter the tally.
 
-# Expected result
+## Expected result
 
 A canvas. See [example.canvas.tsx](example.canvas.tsx) as a reference. In vertical order, the resulting canvas should contain:
 
@@ -26,4 +26,9 @@ A canvas. See [example.canvas.tsx](example.canvas.tsx) as a reference. In vertic
 - A line chart of cumulative net lines, one series per category. The horizontal axis is units of work; the vertical axis is lines of code. Each series starts at zero and may go negative — leave room below zero. Draw smooth curves through the points, not straight segments, and mark each point unless the marks would crowd.
 - An ordered list of units of work. Each row is a global index, the unit's name, and a single net line delta (e.g. `+142`). If the unit also has a short identifier, put that before the name. If the unit is a pull request, link it: leave the text in ordinary type and mark the link with a small outbound arrow.
   - When the list is long and consecutive units share a larger container, group them under a header naming that container. If that container is a pull request, link the header the same way. Every unit still appears, numbered across groups. Mark the same groups on the chart with a vertical rule at each boundary and a label over each span — the full name when it fits, the short identifier when it is tight, and no name when the span is a sliver. Omit grouping when the list is short.
-  - If a unit is unusual in size, or in the mix of categories it touched, leave it in order. Give it a quiet frame, one sentence of why, and a small category breakdown using the colors below.
+  - If a unit is unusual in size, or in the mix of categories it touched, leave it in order. Give it a quiet frame, one sentence of why, and a small category breakdown using these colors (light / dark):
+    - Product code: `#7A9EC4` / `#A8C4E0`
+    - Configuration: `#C49490` / `#E0C0BA`
+    - Tests: `#7EAE8C` / `#A8D4B4`
+    - Documentation: `#D4B48A` / `#E8D0A8`
+    - Development tooling: `#A894C4` / `#C8B8E0`

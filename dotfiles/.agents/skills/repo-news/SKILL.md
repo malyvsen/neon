@@ -1,10 +1,10 @@
 ---
 name: repo-news
-description: Present the user with a summary of activity in the repository. Use when explicitly asked to do so.
-disable-model-invocation: yes
+description: Summarizes recent commit and pull request activity in the repository that the user has not yet seen. Use when catching up on repo news, recent activity, or what others have shipped.
+disable-model-invocation: true
 ---
 
-# Present the user with a summary of activity in the repository
+# Repo news
 
 1. Establish when the user was last up-to-date. If not told otherwise, you can assume that was the last workday around 18:00 local time.
 2. Find all commit and PR activity on GitHub since then, on all branches. Ignore activity by the user themselves.

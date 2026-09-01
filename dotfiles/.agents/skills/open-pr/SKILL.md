@@ -1,12 +1,12 @@
 ---
 name: open-pr
-description: Push the current branch and open a pull request in the user's style. Use when explicitly asked to open a PR.
-disable-model-invocation: no
+description: Pushes the current branch and opens a pull request in the user's style. Use when opening a PR, creating a pull request, or publishing a branch for review.
+disable-model-invocation: false
 ---
 
 # Open a PR
 
-Open a pull request. By default, this should be from the current branch, but the user may override this.
+By default this should be from the current branch, but the user may override this.
 
 ## Steps
 
