@@ -4,10 +4,17 @@
  * Copy this file and edit it in place. Pixel8Pro and Desktop take children only.
  *
  * PAGES holds switcher labels, the point of each screen, and device captions.
+ * Drop `mobile` or `desktop` on a page (or variant) to hide that frame when the
+ * screen is device-only. Keep at least one.
+ *
  * A page may list variants: other presentations of the same screen, each with
  * a one-sentence tradeoff. Extra tabs appear for any page that has them.
  *
  * Add a screen by appending a page and a function, then branching in Screen.
+ *
+ * Frames layout at real Pixel 8 Pro (448×997) and 14" MacBook Pro (1512×982)
+ * CSS pixels, then SCALE for the canvas. Bump SCALE if it is hard to read;
+ * lower it if the frames overflow when zoomed.
  */
 import {
   H1,
@@ -22,9 +29,15 @@ const INK = "#1d1b20";
 const MUTED = "#5c584f";
 const LINE = "#d8d0c4";
 const CHIP = "#ebe4d8";
-const PHONE_W = 312;
-const PHONE_H = 694;
-const DESKTOP_W = 320;
+const PIXEL8_W = 448;
+const PIXEL8_H = 997;
+const PIXEL8_BEZEL = 7;
+const DESKTOP_W = 1512;
+const DESKTOP_H = 982;
+/** Display scale. Bump if the canvas is hard to read; lower if the frames overflow when zoomed. */
+const SCALE = 0.5;
+const PIXEL8_FRAME_W = PIXEL8_W + PIXEL8_BEZEL * 2;
+const PIXEL8_FRAME_H = PIXEL8_H + PIXEL8_BEZEL * 2;
 
 const FIELDS = [
   { name: "Home paddock", acres: "12 ac", crop: "Wheat", stage: "Heading" },
@@ -42,8 +55,8 @@ type Variant = {
   id: string;
   label: string;
   tradeoff: string;
-  mobile: string;
-  desktop: string;
+  mobile?: string;
+  desktop?: string;
 };
 
 type Page = {
@@ -116,122 +129,150 @@ const PAGES: Page[] = [
     note: "This is where a finished job gets written down before the next one starts.",
     mobile:
       "The fields stack in one column, and Save is a short button under the last field.",
-    desktop:
-      "The same stacked fields, with Save a little shorter.",
   },
 ];
 
-function Pixel8Pro({ children }: { children?: object }) {
+function Scaled({
+  width,
+  height,
+  children,
+}: {
+  width: number;
+  height: number;
+  children?: object;
+}) {
   return (
     <div
       style={{
-        width: PHONE_W,
+        width: width * SCALE,
+        height: height * SCALE,
         flex: "none",
-        padding: 7,
-        borderRadius: 36,
-        background: "#1c1b19",
         overflow: "hidden",
-        boxSizing: "border-box",
-        fontFamily: "system-ui, sans-serif",
       }}
     >
+      <div style={{ width, height, zoom: SCALE }}>{children}</div>
+    </div>
+  );
+}
+
+function Pixel8Pro({ children }: { children?: object }) {
+  return (
+    <Scaled width={PIXEL8_FRAME_W} height={PIXEL8_FRAME_H}>
       <div
         style={{
-          height: PHONE_H,
-          borderRadius: 30,
+          width: PIXEL8_FRAME_W,
+          height: PIXEL8_FRAME_H,
+          padding: PIXEL8_BEZEL,
+          borderRadius: 36,
+          background: "#1c1b19",
           overflow: "hidden",
-          display: "flex",
-          flexDirection: "column",
-          background: PAPER,
-          color: INK,
+          boxSizing: "border-box",
+          fontFamily: "system-ui, sans-serif",
         }}
       >
         <div
           style={{
-            position: "relative",
-            height: 32,
+            height: PIXEL8_H,
+            borderRadius: 30,
+            overflow: "hidden",
             display: "flex",
-            alignItems: "center",
-            padding: "0 22px",
-            fontSize: 12,
-            fontWeight: 600,
-            fontVariantNumeric: "tabular-nums",
-          }}
-        >
-          <span>11:32</span>
-          <div
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: 10,
-              width: 12,
-              height: 12,
-              marginLeft: -6,
-              borderRadius: 99,
-              background: "#0a0908",
-            }}
-          />
-        </div>
-        <div
-          style={{
-            flex: 1,
-            minWidth: 0,
-            minHeight: 0,
-            overflow: "auto",
-            padding: "8px 20px 12px",
-          }}
-        >
-          {children}
-        </div>
-        <div
-          style={{
-            height: 22,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            flexDirection: "column",
+            background: PAPER,
+            color: INK,
           }}
         >
           <div
             style={{
-              width: 96,
-              height: 4,
-              borderRadius: 99,
-              background: INK,
-              opacity: 0.35,
+              position: "relative",
+              height: 32,
+              display: "flex",
+              alignItems: "center",
+              padding: "0 22px",
+              fontSize: 12,
+              fontWeight: 600,
+              fontVariantNumeric: "tabular-nums",
             }}
-          />
+          >
+            <span>11:32</span>
+            <div
+              style={{
+                position: "absolute",
+                left: "50%",
+                top: 10,
+                width: 12,
+                height: 12,
+                marginLeft: -6,
+                borderRadius: 99,
+                background: "#0a0908",
+              }}
+            />
+          </div>
+          <div
+            style={{
+              flex: 1,
+              minWidth: 0,
+              minHeight: 0,
+              overflow: "auto",
+              padding: "8px 20px 12px",
+            }}
+          >
+            {children}
+          </div>
+          <div
+            style={{
+              height: 22,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <div
+              style={{
+                width: 96,
+                height: 4,
+                borderRadius: 99,
+                background: INK,
+                opacity: 0.35,
+              }}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </Scaled>
   );
 }
 
 function Desktop({ children }: { children?: object }) {
   return (
-    <div
-      style={{
-        width: DESKTOP_W,
-        flex: "none",
-        overflow: "hidden",
-        border: `1px solid ${LINE}`,
-        borderRadius: 10,
-        background: PAPER,
-        color: INK,
-        fontFamily: "system-ui, sans-serif",
-      }}
-    >
-      <div style={{ padding: 16 }}>{children}</div>
-    </div>
+    <Scaled width={DESKTOP_W} height={DESKTOP_H}>
+      <div
+        style={{
+          width: DESKTOP_W,
+          height: DESKTOP_H,
+          overflow: "auto",
+          border: `1px solid ${LINE}`,
+          borderRadius: 10,
+          background: PAPER,
+          color: INK,
+          fontFamily: "system-ui, sans-serif",
+          boxSizing: "border-box",
+        }}
+      >
+        <div style={{ padding: 16 }}>{children}</div>
+      </div>
+    </Scaled>
   );
 }
 
 function Pair({
   label,
   caption,
+  frameWidth,
   children,
 }: {
   label: string;
   caption: string;
+  frameWidth: number;
   children?: object;
 }) {
   const theme = useHostTheme();
@@ -246,7 +287,11 @@ function Pair({
     >
       <div>
         <Text weight="semibold">{label}</Text>
-        <Text size="small" tone="secondary" style={{ maxWidth: DESKTOP_W }}>
+        <Text
+          size="small"
+          tone="secondary"
+          style={{ maxWidth: frameWidth * SCALE }}
+        >
           {caption}
         </Text>
       </div>
@@ -535,8 +580,8 @@ export default function Canvas() {
   const page = PAGES.find((row) => row.id === pageId) ?? PAGES[0];
   const variant =
     page.variants?.find((row) => row.id === variantId) ?? page.variants?.[0];
-  const mobileCaption = variant?.mobile ?? page.mobile ?? "";
-  const desktopCaption = variant?.desktop ?? page.desktop ?? "";
+  const mobileCaption = variant?.mobile ?? page.mobile;
+  const desktopCaption = variant?.desktop ?? page.desktop;
 
   return (
     <Stack gap={28} style={{ padding: 24, boxSizing: "border-box" }}>
@@ -575,16 +620,28 @@ export default function Canvas() {
           alignItems: "flex-start",
         }}
       >
-        <Pair label="Mobile" caption={mobileCaption}>
-          <Pixel8Pro>
-            <Screen page={page.id} variant={variant?.id ?? ""} touch />
-          </Pixel8Pro>
-        </Pair>
-        <Pair label="Desktop" caption={desktopCaption}>
-          <Desktop>
-            <Screen page={page.id} variant={variant?.id ?? ""} touch={false} />
-          </Desktop>
-        </Pair>
+        {mobileCaption ? (
+          <Pair
+            label="Mobile"
+            caption={mobileCaption}
+            frameWidth={PIXEL8_FRAME_W}
+          >
+            <Pixel8Pro>
+              <Screen page={page.id} variant={variant?.id ?? ""} touch />
+            </Pixel8Pro>
+          </Pair>
+        ) : null}
+        {desktopCaption ? (
+          <Pair
+            label="Desktop"
+            caption={desktopCaption}
+            frameWidth={DESKTOP_W}
+          >
+            <Desktop>
+              <Screen page={page.id} variant={variant?.id ?? ""} touch={false} />
+            </Desktop>
+          </Pair>
+        ) : null}
       </div>
     </Stack>
   );
