@@ -16,4 +16,4 @@ If the work is a bug, the plan should call for tests that would have caught it, 
 
 ## Every commit should be evergreen
 
-The plan should call for a same-model `/make-evergreen` subagent just before each commit (by its file path), given only a brief note of that commit's intent — no coding rules or file lists. Its changes belong in the commit unless they are counterproductive.
+The plan should call for a same-model subagent just before each commit, given only a brief note of that commit's intent and the path to the `/make-evergreen` skill to use (the scope being the uncommitted work and related files). Its changes belong in the commit unless they are counterproductive.
