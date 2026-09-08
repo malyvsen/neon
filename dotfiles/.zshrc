@@ -64,7 +64,9 @@ DOC
 
     while IFS=$'\t' read -r branch worktree_path; do
         if [[ "$branch" != "$main_branch" && -n "${closed_pr_branches[$branch]}" && -z "${open_pr_branches[$branch]}" ]]; then
-            [[ -n "$worktree_path" ]] && git worktree remove --force "$worktree_path"
+            if [[ -n "$worktree_path" ]] && git worktree remove --force "$worktree_path"; then
+                echo "Deleted worktree $worktree_path (was $branch)."
+            fi
             to_delete+=("$branch")
         fi
     done < <(git for-each-ref --format='%(refname:short)%09%(worktreepath)' refs/heads/)
