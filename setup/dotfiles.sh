@@ -1,3 +1,3 @@
 #!/bin/bash
-echo "Setting up dotfiles..." &&
-rsync -a "$(dirname $0)/dotfiles/" "$HOME/"
+echo "Setting up dotfiles..."
+rsync -a "$NEON_ROOT/dotfiles/" "$HOME/"
