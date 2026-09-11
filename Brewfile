@@ -1,5 +1,3 @@
-cask_args adopt: true
-
 brew "eza"
 brew "bat"
 brew "starship"
