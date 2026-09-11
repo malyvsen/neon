@@ -1,9 +1,14 @@
 export ZSH="$HOME/.oh-my-zsh"
 
-plugins=(git z zsh-autosuggestions ssh-agent)
+plugins=(git z ssh-agent)
+
+if [[ -d "$HOME/.docker/completions" ]]; then
+    fpath=("$HOME/.docker/completions" $fpath)
+fi
 
 source $ZSH/oh-my-zsh.sh
 eval "$(starship init zsh)"
+source "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
 # uv setup
 export PATH="$HOME/.local/bin:$PATH"
