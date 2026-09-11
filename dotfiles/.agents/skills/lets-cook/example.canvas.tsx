@@ -7,6 +7,9 @@ import {
   type CSSProperties,
 } from "cursor/canvas";
 
+type Language = "en" | "pl";
+
+/** Printed as `amount + name`, so the name follows the amount: "½ tsp salt" / "szczypta soli". */
 type Ingredient = {
   id: string;
   amount: string;
@@ -26,11 +29,19 @@ type Step = {
   instructions: string[];
 };
 
+type NutrientId =
+  | "energy"
+  | "fat"
+  | "saturates"
+  | "carbs"
+  | "sugars"
+  | "protein"
+  | "salt";
+
 type Nutrient = {
-  name: string;
+  id: NutrientId;
   value: string;
   intake: string;
-  nested?: boolean;
 };
 
 type Utensil = {
@@ -42,6 +53,7 @@ type Utensil = {
 // Recipe — replace these constants. Leave everything below this block as-is.
 // ---------------------------------------------------------------------------
 
+const LANGUAGE: Language = "en";
 const NAME = "Shakshuka";
 const SERVINGS: number = 2;
 
@@ -108,13 +120,13 @@ const UTENSILS: Utensil[] = [
 ];
 
 const NUTRIENTS: Nutrient[] = [
-  { name: "Energy", value: "1624 kJ / 388 kcal", intake: "19%" },
-  { name: "Fat", value: "26 g", intake: "37%" },
-  { name: "of which saturates", value: "5.1 g", intake: "26%", nested: true },
-  { name: "Carbohydrate", value: "21 g", intake: "8%" },
-  { name: "of which sugars", value: "13 g", intake: "14%", nested: true },
-  { name: "Protein", value: "18 g", intake: "36%" },
-  { name: "Salt", value: "2.3 g", intake: "38%" },
+  { id: "energy", value: "1624 kJ / 388 kcal", intake: "19%" },
+  { id: "fat", value: "26 g", intake: "37%" },
+  { id: "saturates", value: "5.1 g", intake: "26%" },
+  { id: "carbs", value: "21 g", intake: "8%" },
+  { id: "sugars", value: "13 g", intake: "14%" },
+  { id: "protein", value: "18 g", intake: "36%" },
+  { id: "salt", value: "2.3 g", intake: "38%" },
 ];
 
 const STEPS: Step[] = [
@@ -206,6 +218,54 @@ const STEPS: Step[] = [
 // Layout
 // ---------------------------------------------------------------------------
 
+const COPY = {
+  en: {
+    ingredients: "Ingredients",
+    utensils: "Utensils",
+    steps: "Steps",
+    nutrition: "Nutrition",
+    typicalValues: "Typical values",
+    perServing: "Per serving",
+    referenceIntake: "Reference intake",
+    timelineAria: "Cooking timeline in minutes from start",
+    timelineSpot: (start: number, end: number) =>
+      `${start}–${end} min from start`,
+    nutrients: {
+      energy: "Energy",
+      fat: "Fat",
+      saturates: "of which saturates",
+      carbs: "Carbohydrate",
+      sugars: "of which sugars",
+      protein: "Protein",
+      salt: "Salt",
+    },
+  },
+  pl: {
+    ingredients: "Składniki",
+    utensils: "Przybory",
+    steps: "Kroki",
+    nutrition: "Wartości odżywcze",
+    typicalValues: "Wartość odżywcza",
+    perServing: "Na porcję",
+    referenceIntake: "% RWS",
+    timelineAria: "Oś czasu gotowania w minutach od początku",
+    timelineSpot: (start: number, end: number) =>
+      `${start}–${end} min od początku`,
+    nutrients: {
+      energy: "Energia",
+      fat: "Tłuszcz",
+      saturates: "w tym kwasy nasycone",
+      carbs: "Węglowodany",
+      sugars: "w tym cukry",
+      protein: "Białko",
+      salt: "Sól",
+    },
+  },
+} as const;
+
+const copy = COPY[LANGUAGE];
+const NESTED_NUTRIENTS: NutrientId[] = ["saturates", "sugars"];
+
 const ui = {
   paper: "#FFF3F6",
   grid: "#F4C4D4",
@@ -236,8 +296,21 @@ function checkId(kind: "ingredient" | "utensil", id: string): string {
   return `${kind}:${id}`;
 }
 
+function servingsLabel(count: number): string {
+  if (LANGUAGE === "en") {
+    return count === 1 ? "1 serving" : `${count} servings`;
+  }
+  if (count === 1) return "1 porcja";
+  const ones = count % 10;
+  const tens = count % 100;
+  if (ones >= 2 && ones <= 4 && (tens < 12 || tens > 14)) {
+    return `${count} porcje`;
+  }
+  return `${count} porcji`;
+}
+
 function timelineSpot(step: Step): string {
-  return `${step.start}–${step.end} min from start`;
+  return copy.timelineSpot(step.start, step.end);
 }
 
 function tickEvery(total: number): number {
@@ -350,17 +423,17 @@ function NutritionTable({ rows }: { rows: Nutrient[] }) {
         <tr>
           <th style={{ ...cell, textAlign: "left" }}>
             <Text size="small" style={{ color: ui.muted }}>
-              Typical values
+              {copy.typicalValues}
             </Text>
           </th>
           <th style={{ ...cell, textAlign: "right" }}>
             <Text size="small" style={{ color: ui.muted }}>
-              Per serving
+              {copy.perServing}
             </Text>
           </th>
           <th style={{ ...cell, textAlign: "right" }}>
             <Text size="small" style={{ color: ui.muted }}>
-              Reference intake
+              {copy.referenceIntake}
             </Text>
           </th>
         </tr>
@@ -369,14 +442,15 @@ function NutritionTable({ rows }: { rows: Nutrient[] }) {
         {rows.map((row, i) => {
           const line =
             i === rows.length - 1 ? { ...cell, borderBottom: "none" } : cell;
+          const nested = NESTED_NUTRIENTS.includes(row.id);
           return (
-            <tr key={`${row.name}-${i}`}>
-              <td style={{ ...line, paddingLeft: row.nested ? 16 : 0 }}>
+            <tr key={`${row.id}-${i}`}>
+              <td style={{ ...line, paddingLeft: nested ? 16 : 0 }}>
                 <Text
-                  tone={row.nested ? "secondary" : "primary"}
-                  style={{ color: row.nested ? ui.muted : ui.onBar }}
+                  tone={nested ? "secondary" : "primary"}
+                  style={{ color: nested ? ui.muted : ui.onBar }}
                 >
-                  {row.name}
+                  {copy.nutrients[row.id]}
                 </Text>
               </td>
               <td style={{ ...line, textAlign: "right" }}>
@@ -484,7 +558,7 @@ function Timeline({
       width="100%"
       viewBox={`0 0 ${width} ${height}`}
       role="img"
-      aria-label="Cooking timeline in minutes from start"
+      aria-label={copy.timelineAria}
     >
       {ticks.map((tick) => (
         <line
@@ -594,7 +668,7 @@ export default function Recipe() {
   }
 
   const ingredients = ingredientGroups.length > 0 && (
-    <Window title="Ingredients" bar={ui.pink}>
+    <Window title={copy.ingredients} bar={ui.pink}>
       <Stack gap={16}>
         {ingredientGroups.map((group, i) => (
           <div key={`${group.name}-${i}`}>
@@ -616,7 +690,7 @@ export default function Recipe() {
   );
 
   const utensils = UTENSILS.length > 0 && (
-    <Window title="Utensils" bar={ui.blue}>
+    <Window title={copy.utensils} bar={ui.blue}>
       <Stack gap={12}>
         <Checklist
           items={UTENSILS.map((item) => ({
@@ -665,7 +739,7 @@ export default function Recipe() {
             {NAME}
           </H1>
           <Text size="small" style={{ color: ui.muted }}>
-            {SERVINGS} {SERVINGS === 1 ? "serving" : "servings"}
+            {servingsLabel(SERVINGS)}
           </Text>
         </Stack>
         <Dots />
@@ -675,7 +749,7 @@ export default function Recipe() {
         <div style={{ position: "relative" }}>
           <Stack gap={20}>
             {NUTRIENTS.length > 0 && (
-              <Window title="Nutrition" bar={ui.mint}>
+              <Window title={copy.nutrition} bar={ui.mint}>
                 <NutritionTable rows={NUTRIENTS} />
               </Window>
             )}
@@ -690,7 +764,7 @@ export default function Recipe() {
             )}
 
             {STEPS.length > 0 && (
-              <Window title="Steps" bar={ui.mint}>
+              <Window title={copy.steps} bar={ui.mint}>
                 <Stack gap={16}>
                   <Timeline
                     steps={STEPS}
