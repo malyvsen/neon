@@ -1,0 +1,23 @@
+cask_args adopt: true
+
+brew "eza"
+brew "bat"
+brew "starship"
+brew "zsh-autosuggestions"
+brew "gh"
+brew "go"
+brew "uv"
+brew "volta"
+brew "go-task"
+brew "watch"
+brew "git-filter-repo"
+brew "cmake"
+brew "pkgconf"
+brew "ffmpeg"
+
+cask "firefox"
+cask "telegram"
+cask "spotify"
+cask "cursor"
+cask "docker-desktop"
+cask "whatsapp"
