@@ -1,6 +1,6 @@
 ---
 name: open-pr
-description: Pushes the current branch and opens a pull request in the user's style. Use when opening a PR, creating a pull request, or publishing a branch for review.
+description: Pushes the current branch and opens a pull request in the user's style. Use when opening a PR, creating a pull request, publishing a branch for review, or submitting a stack.
 disable-model-invocation: false
 ---
 
@@ -12,9 +12,8 @@ By default this should be from the current branch, but the user may override thi
 
 1. Inspect branch state and conversations with other agents pertaining to it.
 2. If there are uncommitted changes the user intended to include, stop and ask what to do.
-3. Push if needed, then create the PR.
-4. Use GitHub's native PR stacking if it seems natural to make the PR part of a stack.
-5. Return the PR URL, title, and body.
+3. If the branch is already in a stack (`gh stack view --json`), follow `/gh-stack` and publish with `gh stack submit --auto`. Otherwise push if needed and open a normal PR.
+4. Return the PR URL, title, and body.
 
 ## Title
 
