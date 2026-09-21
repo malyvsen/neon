@@ -1,3 +1,5 @@
+tap "anomalyco/tap"
+
 brew "eza"
 brew "bat"
 brew "starship"
@@ -12,9 +14,10 @@ brew "git-filter-repo"
 brew "cmake"
 brew "pkgconf"
 brew "ffmpeg"
+brew "anomalyco/tap/opencode"
 
 cask "firefox"
 cask "telegram"
 cask "spotify"
-cask "cursor"
+cask "zed"
 cask "whatsapp"
