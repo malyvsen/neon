@@ -1,6 +1,6 @@
 ---
 name: work-overview
-description: Renders an HTML rundown of commits or pull requests so the user can judge whether added complexity was worth the benefit. Use when reviewing the complexity of a set of changes, comparing line-delta cost to benefit, or asking for a work overview of commits or PRs.
+description: Presents a visual rundown of commits or pull requests so the user can judge whether added complexity was worth the benefit. Use when reviewing the complexity of a set of changes, comparing line-delta cost to benefit, or asking for a work overview of commits or PRs.
 disable-model-invocation: false
 ---
 
@@ -18,7 +18,11 @@ When computing the delta in lines, count both sides of the diff, including files
 
 ## Expected result
 
-An HTML page. Copy [example.html](example.html) to the workspace's artifact directory, edit the `work` data, and open it in a browser. In vertical order, the resulting page should contain:
+Prefer an available visualization or mockup tool that supports the required content and interactions. Read and follow its instructions for output format, previewing, file location, theming, and saving interactive selections. Use [example.html](example.html) as a reference for content, design, and behavior, adapting its implementation to the selected tool.
+
+If no suitable tool is available, copy [example.html](example.html) to a writable output location chosen according to the environment’s instructions, replace its `work` data with the measured repository data, and open it in a browser.
+
+In vertical order, the overview must contain:
 
 - A title of a few words for the work as a whole.
 - A subtitle of one or two sentences on the aim of the work, not its mechanics.
