@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Work overview</title>
+<style>
+* { box-sizing: border-box; }
+:root { color-scheme: light dark; --bg: #fff; --ink: #252525; --muted: #666; --line: #e5e5e5; --rule: #ccc; --panel: #f7f7f7; }
+@media (prefers-color-scheme: dark) { :root { --bg: #1b1b1b; --ink: #eee; --muted: #aaa; --line: #333; --rule: #555; --panel: #252525; } }
+body { margin: 0; padding: 28px; background: var(--bg); color: var(--ink); font: 14px/1.5 system-ui, sans-serif; }
+main { max-width: 1000px; margin: auto; display: grid; gap: 28px; }
+main > * { min-width: 0; }
+h1, h2, p { margin: 0; }
+h1 { font-size: 28px; line-height: 1.2; letter-spacing: -.5px; }
+header p { margin-top: 8px; color: var(--muted); }
+h2 { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
+a { color: inherit; text-decoration: none; }
+a:hover { text-decoration: underline; }
+a:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.outbound { color: var(--muted); margin-left: 5px; }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.stat strong { display: block; font-size: 28px; font-weight: 600; letter-spacing: -.5px; font-variant-numeric: tabular-nums; }
+.stat span, .period, .highlight p { color: var(--muted); font-size: 13px; }
+.chart-scroll { overflow-x: auto; }
+.chart { display: block; width: 100%; min-width: 600px; }
+.chart text { fill: var(--muted); font-size: 10px; }
+.chart .grid { stroke: var(--line); }
+.chart .rule { stroke: var(--rule); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 8px 0; color: var(--muted); font-size: 12px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.series { color: var(--series-light); }
+@media (prefers-color-scheme: dark) { .series { color: var(--series-dark); } }
+.swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; background: currentColor; flex: none; }
+.group + .group { border-top: 1px solid var(--line); margin-top: 20px; padding-top: 20px; }
+ol { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.unit { display: grid; grid-template-columns: var(--index-width) var(--id-width) minmax(0, 1fr) auto; gap: 12px; align-items: start; }
+.number { color: var(--muted); font-size: 12px; padding-top: 1px; }
+code, .delta { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-variant-numeric: tabular-nums; }
+code { font-size: 12px; padding-top: 1px; }
+.delta { font-weight: 600; white-space: nowrap; }
+.highlight { padding: 12px; border: 1px solid var(--rule); border-radius: 6px; background: var(--panel); }
+.highlight p { margin: 10px 0; }
+.mix { display: flex; height: 6px; border-radius: 2px; overflow: hidden; }
+.mix span { background: currentColor; }
+@media (max-width: 600px) { body { padding: 16px; } .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } .unit { gap: 8px; } h1 { font-size: 24px; } }
+</style>
+</head>
+<body>
+<main id="overview"></main>
+<script>
+// Edit work to describe the commits, pull requests, or other units being reviewed.
+const work = {
+  title: "Backstage cue handoff",
+  subtitle:
+    "Take scene cues off the puppeteer's live line and make the handoff a contract the stage manager can trust.",
+  unitLabel: "Commits",
+  duration: "6 days",
+  linesBefore: 12_480,
+  period: "12–18 Apr 2026",
+  categories: [
+    { id: "code", label: "Product code", light: "#7A9EC4", dark: "#A8C4E0" },
+    { id: "config", label: "Configuration", light: "#C49490", dark: "#E0C0BA" },
+    { id: "tests", label: "Tests", light: "#7EAE8C", dark: "#A8D4B4" },
+    { id: "docs", label: "Documentation", light: "#D4B48A", dark: "#E8D0A8" },
+    { id: "tooling", label: "Development tooling", light: "#A894C4", dark: "#C8B8E0" },
+  ],
+  groups: [
+    {
+      header: "#184 Extract the cue rack",
+      href: "https://github.com/example/marionette/pull/184",
+      units: [
+        {
+          id: "a3f2c1",
+          name: "Extract CueRack from the live line",
+          lines: { code: 120, config: 8, tests: 10, docs: 4 },
+        },
+        {
+          id: "8b91d0",
+          name: "Wire CueRack into the stage manager's desk",
+          lines: { code: 30, config: 8 },
+        },
+        {
+          id: "c4e2a1",
+          name: "Cover dropped cues and curtain stalls",
+          lines: { code: 4, tests: 90 },
+        },
+      ],
+    },
+    {
+      header: "#191 Playbills and the fly-system clock",
+      href: "https://github.com/example/marionette/pull/191",
+      units: [
+        {
+          id: "d17a3b",
+          name: "Document string-tension checks for the evening crew",
+          lines: { config: 5, docs: 36 },
+        },
+        {
+          id: "f902e8",
+          name: "Rewrite scene encoding onto punch cards",
+          lines: { code: 760, config: 100, tests: 22, docs: 8 },
+          highlight:
+            "About ten times larger than neighboring commits, and almost entirely product code in a pull request otherwise about playbills and the fly-system clock.",
+        },
+        {
+          id: "e4b3c2",
+          name: "Tighten the fly-system clock and lint config",
+          lines: { tooling: 12 },
+        },
+        {
+          id: "91aa04",
+          name: "Drop unused gel-swap helpers",
+          lines: { code: -24, config: -4 },
+        },
+      ],
+    },
+    {
+      header: "main",
+      units: [
+        {
+          id: "b2c1d0",
+          name: "Fix playbill typo",
+          lines: { docs: 2 },
+        },
+        {
+          id: "7e90ab",
+          name: "Bump default curtain fade to three seconds",
+          lines: { code: 2, config: 4 },
+        },
+      ],
+    },
+  ],
+};
+
+
+const escapeHTML = value => String(value).replace(/[&<>"']/g, char => ({"&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"}[char]));
+const categories = work.categories;
+let number = 0;
+const groups = work.groups.map(group => ({ ...group, units: group.units.map(unit => ({ ...unit, n: ++number })) }));
+const units = groups.flatMap(group => group.units);
+const count = units.length;
+const net = unit => categories.reduce((sum, { id }) => sum + (unit.lines[id] ?? 0), 0);
+const netDelta = units.reduce((sum, unit) => sum + net(unit), 0);
+function formatDelta(n) {
+  return `${n > 0 ? "+" : n < 0 ? "−" : ""}${Math.abs(n).toLocaleString("en-US")}`;
+}
+function linked(text, href) {
+  return href ? `<a href="${escapeHTML(href)}">${escapeHTML(text)}<span class="outbound" aria-hidden="true">↗</span></a>` : escapeHTML(text);
+}
+function seriesStyle(category) {
+  return `--series-light:${escapeHTML(category.light)};--series-dark:${escapeHTML(category.dark)}`;
+}
+function legend(entries) {
+  return `<div class="legend">${entries.map(entry => `<span><i class="swatch series" style="${seriesStyle(entry)}" aria-hidden="true"></i>${escapeHTML(entry.label)}${entry.value === undefined ? "" : ` ${formatDelta(entry.value)}`}</span>`).join("")}</div>`;
+}
+function niceCeil(n) {
+  if (n <= 0) return 0;
+  const mag = 10 ** Math.floor(Math.log10(n)), err = n / mag;
+  return (err <= 1 ? 1 : err <= 2 ? 2 : err <= 5 ? 5 : 10) * mag;
+}
+function smoothPath(values, xAt, yAt) {
+  const points = values.map((value, i) => ({ x: xAt(i), y: yAt(value) }));
+  if (points.length < 2) return "";
+  let d = `M ${points[0].x} ${points[0].y}`;
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[i - 1] ?? points[i], p1 = points[i], p2 = points[i + 1], p3 = points[i + 2] ?? p2;
+    d += ` C ${p1.x + (p2.x - p0.x) * .22} ${p1.y + (p2.y - p0.y) * .22}, ${p2.x - (p3.x - p1.x) * .22} ${p2.y - (p3.y - p1.y) * .22}, ${p2.x} ${p2.y}`;
+  }
+  return d;
+}
+function chart() {
+  const series = Object.fromEntries(categories.map(({ id }) => [id, [0]]));
+  for (const unit of units) for (const { id } of categories) {
+    series[id].push(series[id].at(-1) + (unit.lines[id] ?? 0));
+  }
+  const values = Object.values(series).flat();
+  const yMax = niceCeil(Math.max(0, ...values)) || 1;
+  const trough = Math.min(0, ...values);
+  const yMin = trough < 0 ? -niceCeil(-trough) : -yMax * .08;
+  const step = niceCeil(yMax / 4), ticks = [0];
+  for (let v = step; v <= yMax; v += step) ticks.push(v);
+  for (let v = -step; v >= yMin; v -= step) ticks.push(v);
+  ticks.sort((a, b) => a - b);
+  const width = 720, plotH = 180, left = 26 + Math.max(...ticks.map(tick => String(tick).length)) * 7, right = 12;
+  const plotW = width - left - right, showGroups = groups.length > 1;
+  let offset = 0;
+  const bands = groups.map(group => {
+    const w = group.units.length / Math.max(count, 1) * plotW;
+    const band = { x: left + offset / Math.max(count, 1) * plotW, w, href: group.href,
+      label: w >= 120 ? group.header : w >= 36 ? group.header?.split(/\s+/)[0] : undefined };
+    offset += group.units.length;
+    return band;
+  });
+  const labelH = showGroups && bands.some(band => band.label) ? 18 : 0;
+  const top = 12 + labelH, height = top + plotH + 28;
+  const xAt = i => left + i / Math.max(count, 1) * plotW;
+  const yAt = value => top + plotH * (1 - (value - yMin) / (yMax - yMin));
+  const mark = count + 1 <= 20;
+  const bandMarkup = showGroups ? `<defs>${bands.map((band, i) => `<clipPath id="band-${i}"><rect x="${band.x}" y="0" width="${band.w}" height="${labelH}"/></clipPath>`).join("")}</defs>` + bands.map((band, i) => {
+    const rule = i < bands.length - 1 ? `<line class="rule" x1="${band.x + band.w}" x2="${band.x + band.w}" y1="${top}" y2="${top + plotH}"/>` : "";
+    const label = band.label ? `<text x="${band.x + band.w / 2}" y="12" text-anchor="middle" clip-path="url(#band-${i})">${escapeHTML(band.label)}</text>` : "";
+    return rule + (band.href && label ? `<a href="${escapeHTML(band.href)}">${label}</a>` : label);
+  }).join("") : "";
+  const labels = ["0", ...units.map(unit => { const label = unit.id ?? unit.name; return label.length > 10 ? `${label.slice(0, 9)}…` : label; })];
+  return `<svg class="chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="Cumulative net lines of code by category">
+    ${ticks.map(tick => `<line class="grid" x1="${left}" x2="${width - right}" y1="${yAt(tick)}" y2="${yAt(tick)}" stroke-width="${tick === 0 ? 1.25 : 1}"/><text x="${left - 8}" y="${yAt(tick) + 3}" text-anchor="end">${tick}</text>`).join("")}
+    ${bandMarkup}<text x="12" y="${top + plotH / 2}" text-anchor="middle" transform="rotate(-90 12 ${top + plotH / 2})">Lines of code</text>
+    ${categories.map(category => `<g class="series" style="${seriesStyle(category)}"><path d="${smoothPath(series[category.id], xAt, yAt)}" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>${mark ? series[category.id].map((value, i) => `<circle cx="${xAt(i)}" cy="${yAt(value)}" r="2.5" fill="currentColor"/>`).join("") : ""}</g>`).join("")}
+    ${mark ? labels.map((label, i) => `<text x="${xAt(i)}" y="${height - 8}" text-anchor="middle">${escapeHTML(label)}</text>`).join("") : ""}
+  </svg>`;
+}
+function unitRow(unit) {
+  const row = `<div class="unit"><span class="number">${unit.n}.</span><code>${escapeHTML(unit.id ?? "")}</code><span>${linked(unit.name, unit.href)}</span><span class="delta">${formatDelta(net(unit))}</span></div>`;
+  if (!unit.highlight) return `<li>${row}</li>`;
+  const entries = categories.map(category => ({ ...category, value: unit.lines[category.id] ?? 0 })).filter(entry => entry.value !== 0);
+  const total = entries.reduce((sum, entry) => sum + Math.abs(entry.value), 0);
+  const mix = total ? `<div class="mix" aria-hidden="true">${entries.map(entry => `<span class="series" style="${seriesStyle(entry)};width:${Math.abs(entry.value) / total * 100}%"></span>`).join("")}</div>${legend(entries)}` : "";
+  return `<li class="highlight">${row}<p>${escapeHTML(unit.highlight)}</p>${mix}</li>`;
+}
+const stats = [[String(count), work.unitLabel], [work.duration, "Wall clock"], [work.linesBefore.toLocaleString("en-US"), "Lines before"], [formatDelta(netDelta), "Net delta"]];
+document.title = work.title;
+const main = document.querySelector("#overview");
+main.style.setProperty("--index-width", `${String(count).length + 1}ch`);
+main.style.setProperty("--id-width", `${Math.max(0, ...units.map(unit => unit.id?.length ?? 0))}ch`);
+main.innerHTML = `<header><h1>${escapeHTML(work.title)}</h1><p>${escapeHTML(work.subtitle)}</p></header>
+  <section class="stats" aria-label="Summary">${stats.map(([value, label]) => `<div class="stat"><strong>${escapeHTML(value)}</strong><span>${escapeHTML(label)}</span></div>`).join("")}</section>
+  <section aria-label="Line changes"><div class="chart-scroll">${chart()}</div>${legend(categories)}<p class="period">Cumulative net lines by category · ${escapeHTML(work.period)}</p></section>
+  <section aria-label="Units of work">${groups.map(group => `<section class="group">${group.header ? `<h2>${linked(group.header, group.href)}</h2>` : ""}<ol start="${group.units[0]?.n ?? 1}">${group.units.map(unitRow).join("")}</ol></section>`).join("")}</section>`;
+</script>
+</body>
+</html>

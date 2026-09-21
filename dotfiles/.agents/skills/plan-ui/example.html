@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ridge — UI preview</title>
+<style>
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+:root { color-scheme: light dark; --bg: #fff; --ink: #242424; --muted: #666; --line: #ddd; --panel: #f3f3f3; }
+@media (prefers-color-scheme: dark) { :root { --bg: #1b1b1b; --ink: #eee; --muted: #aaa; --line: #444; --panel: #272727; } }
+body { margin: 0; padding: 24px; background: var(--bg); color: var(--ink); font: 14px/1.5 system-ui, sans-serif; }
+main { display: grid; gap: 28px; }
+h1, h2, p, figure { margin: 0; }
+h1 { font-size: 28px; letter-spacing: -.5px; }
+header p { margin-top: 8px; color: var(--muted); }
+.controls { display: grid; gap: 8px; }
+.controls p, figcaption p { font-size: 13px; color: var(--muted); }
+nav { display: flex; flex-wrap: wrap; gap: 8px; }
+nav button { padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px; background: transparent; color: var(--muted); font: inherit; font-size: 13px; cursor: pointer; }
+nav button[aria-pressed="true"] { border-color: var(--ink); color: var(--ink); }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.frames { display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start; min-width: 0; }
+figure { display: grid; gap: 6px; flex: none; max-width: 100%; }
+figcaption strong { display: block; }
+.frame-pad { padding: 20px 16px; border-radius: 8px; background: var(--panel); width: fit-content; }
+.scaled { overflow: hidden; position: relative; }
+.device { transform-origin: top left; color-scheme: light; font: 15px/1.45 system-ui, sans-serif; color: #1d1b20; }
+.mobile { width: 462px; height: 1011px; padding: 7px; border-radius: 36px; background: #1c1b19; overflow: hidden; }
+.phone-screen { height: 100%; border-radius: 30px; overflow: hidden; background: #f7f4ef; display: flex; flex-direction: column; }
+.status { position: relative; height: 32px; flex-shrink: 0; display: flex; align-items: center; padding: 0 22px; font-size: 12px; font-weight: 600; }
+.status::after { content: ""; position: absolute; left: calc(50% - 6px); top: 10px; width: 12px; height: 12px; border-radius: 50%; background: #0a0908; }
+.phone-content { flex: 1; min-height: 0; overflow: auto; padding: 8px 20px 12px; }
+.home-bar { height: 22px; flex-shrink: 0; display: grid; place-items: center; }
+.home-bar::after { content: ""; width: 96px; height: 4px; border-radius: 99px; background: #1d1b20; opacity: .35; }
+.desktop { width: 1512px; height: 982px; padding: 16px; overflow: auto; border: 1px solid #d8d0c4; border-radius: 10px; background: #f7f4ef; }
+.screen-title { margin-bottom: 16px; }
+.mobile .screen-title { margin-bottom: 20px; }
+.screen-title h2 { font-size: 20px; font-weight: 600; letter-spacing: -.3px; }
+.mobile .screen-title h2 { font-size: 22px; }
+.kicker, .caption { color: #5c584f; font-size: 13px; margin-bottom: 6px; }
+.card { margin-bottom: 8px; padding: 12px 14px; border-radius: 8px; background: #ebe4d8; }
+.mobile .card { padding: 14px 16px; }
+.card strong { font-weight: 500; }
+.card small { display: block; color: #5c584f; font-size: 13px; margin-top: 2px; }
+.job { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid #d8d0c4; }
+.mobile .job { padding: 10px 0; }
+.job time { width: 44px; flex: none; color: #5c584f; font-size: 13px; font-variant-numeric: tabular-nums; }
+.job small { display: block; color: #5c584f; font-size: 12px; margin-top: 2px; }
+.field { margin-bottom: 12px; }
+.field-value { min-height: 40px; padding: 10px 12px; border: 1px solid #d8d0c4; border-radius: 6px; }
+.save { margin-top: 8px; min-height: 48px; padding: 0 14px; border: 1px solid #1d1b20; border-radius: 6px; background: #1d1b20; color: #f7f4ef; font: inherit; }
+@media (max-width: 600px) { body { padding: 16px; } h1 { font-size: 24px; } }
+</style>
+</head>
+<body>
+<main>
+<header><h1>Ridge — a field book you take to the yard</h1><p>An app for the farmer who knows every paddock by name and wants to write down each job while it is still in their head.</p></header>
+<section class="controls" aria-label="Preview controls">
+<nav id="pages" aria-label="Pages"></nav><p id="note"></p>
+<nav id="variants" aria-label="Variants"></nav><p id="tradeoff"></p>
+</section>
+<div class="frames" id="frames"></div>
+</main>
+<script>
+// Edit FIELDS, JOBS, PAGES, and screen() to model the proposed interface.
+// Each page or variant supplies mobile/desktop captions for the frames to show.
+// Frames use Pixel 8 Pro and 14-inch MacBook Pro CSS dimensions, scaled to fit.
+const MAX_SCALE = 0.5;
+const FIELDS = [
+  { name: "Home paddock", acres: "12 ac", crop: "Wheat", stage: "Heading" },
+  { name: "North twenty", acres: "20 ac", crop: "Barley", stage: "Tillering" },
+  { name: "Bottom creek", acres: "8 ac", crop: "Lucerne", stage: "After cut" },
+];
+
+const JOBS = [
+  { when: "6:30", field: "Home paddock", job: "Walk the headlands for rust" },
+  { when: "9:00", field: "North twenty", job: "Roll the east strip" },
+  { when: "14:00", field: "Bottom creek", job: "Move the bales off the creek flat" },
+];
+
+const PAGES = [
+  {
+    id: "fields",
+    label: "Field list",
+    note: "This is where you see every paddock and decide which one to walk.",
+    mobile:
+      "Each paddock is a row with the name on top and acres, crop, and stage on the line below.",
+    desktop:
+      "The same two-line rows, with the extra width going to the name and the line under it.",
+  },
+  {
+    id: "plot",
+    label: "Single field",
+    note: "This is where you check one paddock before you start work on it.",
+    mobile:
+      "A note on the paddock comes first, and the next job sits on a card below it.",
+    desktop:
+      "The same note and next job sit in a wider column.",
+  },
+  {
+    id: "today",
+    label: "Day's work",
+    note: "This is where you see what still needs doing today.",
+    variants: [
+      {
+        id: "list",
+        label: "List",
+        tradeoff:
+          "The whole day fits in a tight column, though the rows are thin to tap.",
+        mobile:
+          "Each job is a row with the time pinned left and the field name under the job.",
+        desktop:
+          "The same rows give the job title the extra width, and keep the field name quiet underneath.",
+      },
+      {
+        id: "cards",
+        label: "Cards",
+        tradeoff: "Each job is its own padded block, so one is easier to pick.",
+        mobile:
+          "Each job is a padded card with the time and field above the job title.",
+        desktop:
+          "The cards stay stacked; only the padding tightens on the wider pane.",
+      },
+      {
+        id: "half-day",
+        label: "By half-day",
+        tradeoff:
+          "Afternoon is labeled as its own group, so you know whether you still have to go back out after lunch.",
+        mobile:
+          "Morning and afternoon are labeled groups of the same job rows.",
+        desktop:
+          "The same morning and afternoon groups sit in a wider pane.",
+      },
+    ],
+  },
+  {
+    id: "log",
+    label: "Log a pass",
+    note: "This is where a finished job gets written down before the next one starts.",
+    mobile:
+      "The fields stack in one column, and Save is a short button under the last field.",
+  },
+];
+
+
+const escapeHTML = value => String(value).replace(/[&<>"']/g, char => ({"&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"}[char]));
+const storageKey = `plan-ui:${location.pathname}`;
+let saved;
+try { saved = JSON.parse(localStorage.getItem(storageKey)); } catch {}
+let pageId = saved?.page ?? PAGES[0].id;
+let variantId = saved?.variant ?? "list";
+function save() {
+  try { localStorage.setItem(storageKey, JSON.stringify({ page: pageId, variant: variantId })); } catch {}
+}
+function tabs(items, kind) {
+  return items.map(item => `<button type="button" data-${kind}="${escapeHTML(item.id)}" aria-pressed="false">${escapeHTML(item.label)}</button>`).join("");
+}
+function title(text, kicker = "") {
+  return `<div class="screen-title">${kicker ? `<p class="kicker">${escapeHTML(kicker)}</p>` : ""}<h2>${escapeHTML(text)}</h2></div>`;
+}
+function jobLine(row) {
+  return `<div class="job"><time>${escapeHTML(row.when)}</time><div>${escapeHTML(row.job)}<small>${escapeHTML(row.field)}</small></div></div>`;
+}
+function screen(page, variant) {
+  if (page === "plot") return title("North twenty", "Fields") + '<p style="margin-bottom:16px">20 ac of barley, tillering. Rolled the east strip on 18 August. Soil is still holding, so spray only if rust shows on the headlands.</p><p class="caption">Next</p><div class="card">Walk the east strip after lunch</div>';
+  if (page === "today") {
+    const heading = title("Today", "Saturday, 24 August");
+    if (variant === "cards") return heading + JOBS.map(row => `<div class="card"><small>${escapeHTML(row.when)} · ${escapeHTML(row.field)}</small><strong>${escapeHTML(row.job)}</strong></div>`).join("");
+    if (variant === "half-day") return heading + [
+      ["Morning", JOBS.filter(row => Number(row.when.split(":")[0]) < 12)],
+      ["Afternoon", JOBS.filter(row => Number(row.when.split(":")[0]) >= 12)],
+    ].map(([label, jobs]) => `<section style="margin-bottom:16px"><p class="caption">${label}</p>${jobs.map(jobLine).join("")}</section>`).join("");
+    return heading + JOBS.map(jobLine).join("");
+  }
+  if (page === "log") return title("Log a pass") + [
+    ["Field", "North twenty"], ["Done", "Rolled the east strip"], ["Notes", "No rust on the headlands. Dew off by nine."],
+  ].map(([label, value]) => `<div class="field"><p class="caption">${label}</p><div class="field-value">${value}</div></div>`).join("") + '<button class="save" type="button">Save</button>';
+  return title("Fields") + FIELDS.map(field => `<div class="card"><strong>${escapeHTML(field.name)}</strong><small>${escapeHTML(`${field.acres} · ${field.crop} · ${field.stage}`)}</small></div>`).join("");
+}
+function frame(kind, caption, content) {
+  const mobile = kind === "mobile";
+  return `<figure data-device="${kind}"><figcaption><strong>${mobile ? "Mobile" : "Desktop"}</strong><p>${escapeHTML(caption)}</p></figcaption><div class="frame-pad"><div class="scaled"><div class="device ${kind}">${mobile ? `<div class="phone-screen"><div class="status">11:32</div><div class="phone-content">${content}</div><div class="home-bar"></div></div>` : content}</div></div></div></figure>`;
+}
+function sizeFrames() {
+  const available = document.querySelector("#frames").clientWidth;
+  document.querySelectorAll("figure[data-device]").forEach(figure => {
+    const device = figure.querySelector(".device");
+    const width = device.offsetWidth, height = device.offsetHeight;
+    const scale = Math.min(MAX_SCALE, Math.max(available - 32, 1) / width);
+    figure.style.width = `${width * scale + 32}px`;
+    const scaled = figure.querySelector(".scaled");
+    scaled.style.width = `${width * scale}px`;
+    scaled.style.height = `${height * scale}px`;
+    device.style.transform = `scale(${scale})`;
+  });
+}
+const pageTabs = document.querySelector("#pages");
+const variantTabs = document.querySelector("#variants");
+pageTabs.innerHTML = tabs(PAGES, "page");
+function render() {
+  const page = PAGES.find(row => row.id === pageId) ?? PAGES[0];
+  pageId = page.id;
+  const variant = page.variants?.find(row => row.id === variantId) ?? page.variants?.[0];
+  if (variant) variantId = variant.id;
+  pageTabs.querySelectorAll("button").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.page === page.id)));
+  document.querySelector("#note").textContent = page.note;
+  if (variantTabs.dataset.page !== page.id) {
+    variantTabs.innerHTML = tabs(page.variants ?? [], "variant");
+    variantTabs.dataset.page = page.id;
+  }
+  variantTabs.querySelectorAll("button").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.variant === variant?.id)));
+  variantTabs.hidden = !variant;
+  document.querySelector("#tradeoff").textContent = variant?.tradeoff ?? "";
+  document.querySelector("#tradeoff").hidden = !variant;
+  const mobile = variant?.mobile ?? page.mobile, desktop = variant?.desktop ?? page.desktop;
+  const content = screen(page.id, variant?.id);
+  document.querySelector("#frames").innerHTML = (mobile ? frame("mobile", mobile, content) : "") + (desktop ? frame("desktop", desktop, content) : "");
+  sizeFrames();
+}
+document.querySelector(".controls").addEventListener("click", event => {
+  const button = event.target.closest("button");
+  if (!button) return;
+  const kind = button.hasAttribute("data-page") ? "page" : "variant";
+  const id = button.dataset[kind];
+  if (kind === "page") pageId = id; else variantId = id;
+  render();
+  save();
+});
+new ResizeObserver(sizeFrames).observe(document.querySelector("#frames"));
+render();
+</script>
+</body>
+</html>

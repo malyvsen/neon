@@ -1,6 +1,6 @@
 ---
 name: work-overview
-description: Renders a canvas rundown of commits or pull requests so the user can judge whether added complexity was worth the benefit. Use when reviewing the complexity of a set of changes, comparing line-delta cost to benefit, or asking for a work overview of commits or PRs.
+description: Renders an HTML rundown of commits or pull requests so the user can judge whether added complexity was worth the benefit. Use when reviewing the complexity of a set of changes, comparing line-delta cost to benefit, or asking for a work overview of commits or PRs.
 disable-model-invocation: false
 ---
 
@@ -18,7 +18,7 @@ When computing the delta in lines, count both sides of the diff, including files
 
 ## Expected result
 
-A canvas. See [example.canvas.tsx](example.canvas.tsx) as a reference. In vertical order, the resulting canvas should contain:
+An HTML page. Copy [example.html](example.html) to the workspace's artifact directory, edit the `work` data, and open it in a browser. In vertical order, the resulting page should contain:
 
 - A title of a few words for the work as a whole.
 - A subtitle of one or two sentences on the aim of the work, not its mechanics.

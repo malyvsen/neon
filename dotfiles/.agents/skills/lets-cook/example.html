@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recipe</title>
+<style>
+* { box-sizing: border-box; }
+:root { color-scheme: light; --paper: #fff3f6; --grid: #f4c4d4; --outline: #e89ab8; --ink: #c45a86; --muted: #d48aa8; --cream: #fffbfc; --mint: #c8f0c4; --pink: #f7c2d8; --blue: #c5d4f6; --text: #5a3d4a; }
+body { margin: 0; padding: 24px; background: var(--cream); color: var(--text); font: 14px/1.5 system-ui, sans-serif; }
+main { max-width: 960px; margin: auto; border: 3px solid var(--outline); border-radius: 20px; overflow: hidden; background: var(--paper); }
+h1, h2, h3, p { margin: 0; }
+h1, h2, h3, .step-title { font: 600 12px/1.5 ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: 2px; text-transform: uppercase; color: var(--ink); }
+h1 { font-size: 14px; }
+h3 { font-size: 11px; margin-bottom: 8px; }
+.titlebar, .window > header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; border-bottom: 2px solid var(--outline); }
+.titlebar small, .time { color: var(--muted); }
+.dots { display: flex; gap: 6px; flex-shrink: 0; }
+.dots i { width: 10px; height: 10px; border: 1.5px solid var(--outline); border-radius: 50%; background: #f6d56a; }
+.dots i:nth-child(2) { background: #8ecf8a; }
+.dots i:nth-child(3) { background: var(--pink); }
+.paper { padding: 20px; display: grid; gap: 20px; background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 22px 22px; }
+.window { border: 2px solid var(--outline); border-radius: 16px; overflow: hidden; background: var(--cream); min-width: 0; }
+.window > header { padding: 8px 12px; background: var(--mint); }
+.window.ingredients > header { background: var(--pink); }
+.window.utensils > header { background: var(--blue); }
+.content { padding: 16px; }
+.columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: start; }
+.group + .group { margin-top: 16px; }
+.checklist { display: grid; gap: 8px; }
+.checklist label { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+input[type="checkbox"] { width: 18px; height: 18px; flex-shrink: 0; accent-color: var(--ink); }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 8px 4px; border-bottom: 1px solid var(--grid); text-align: right; font-weight: 400; }
+th { font-size: 12px; color: var(--ink); }
+th:first-child, td:first-child { text-align: left; }
+tr:last-child td { border-bottom: 0; }
+td.nested { padding-left: 16px; color: var(--ink); }
+.timeline { overflow-x: auto; margin-bottom: 16px; }
+.timeline svg { width: 100%; min-width: 600px; display: block; }
+.timeline [role="button"] { cursor: pointer; }
+.timeline .selection { fill: transparent; }
+.timeline [aria-pressed="true"] .selection { fill: var(--pink); }
+.timeline .bar { fill: var(--mint); stroke: var(--outline); stroke-width: 1.5; }
+.timeline [aria-pressed="true"] .bar { fill: var(--pink); }
+.step-list { display: grid; gap: 12px; }
+.step { width: 100%; text-align: left; background: var(--cream); border: 2px solid var(--outline); border-radius: 12px; padding: 12px; color: inherit; font: inherit; cursor: pointer; }
+.step[aria-pressed="true"] { background: var(--pink); }
+.step span { display: block; }
+.step .time { margin: 6px 0; font-size: 12px; }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+@media (max-width: 600px) { body { padding: 8px; } .paper { padding: 12px; } .columns { grid-template-columns: 1fr; } .content { padding: 12px; } }
+</style>
+</head>
+<body>
+<main id="recipe"></main>
+<script>
+// Recipe — edit these constants; keep nutrient IDs stable.
+const LANGUAGE = "en";
+const NAME = "Shakshuka";
+const SERVINGS = 2;
+
+const INGREDIENTS = [
+  {
+    name: "Produce",
+    items: [
+      {
+        id: "onion",
+        amount: "1 medium (about 150 g)",
+        name: "yellow onion",
+      },
+      {
+        id: "pepper",
+        amount: "1 (about 160 g)",
+        name: "red bell pepper",
+      },
+      { id: "garlic", amount: "3 cloves", name: "garlic" },
+      {
+        id: "parsley",
+        amount: "a small handful (about 5 g)",
+        name: "flat-leaf parsley",
+      },
+    ],
+  },
+  {
+    name: "Seasoning",
+    items: [
+      { id: "cumin", amount: "1 tsp (2 g)", name: "ground cumin" },
+      { id: "paprika", amount: "1 tsp (2 g)", name: "smoked paprika" },
+      { id: "cayenne", amount: "¼ tsp", name: "cayenne pepper" },
+      { id: "salt", amount: "½ tsp (3 g)", name: "fine salt" },
+      { id: "pepper-spice", amount: "a few grinds", name: "black pepper" },
+    ],
+  },
+  {
+    name: "Pantry",
+    items: [
+      {
+        id: "oil",
+        amount: "2 tbsp (30 ml)",
+        name: "extra-virgin olive oil",
+      },
+      {
+        id: "tomatoes",
+        amount: "400 g (1 standard tin)",
+        name: "chopped tomatoes",
+      },
+    ],
+  },
+  {
+    name: "Protein",
+    items: [{ id: "eggs", amount: "4 large", name: "eggs" }],
+  },
+];
+
+const UTENSILS = [
+  { id: "skillet", name: "wide skillet with lid (about 26 cm)" },
+  { id: "knife", name: "chef's knife" },
+  { id: "board", name: "cutting board" },
+  { id: "spoon", name: "wooden spoon" },
+  { id: "measuring-spoons", name: "measuring spoons" },
+  { id: "opener", name: "can opener" },
+];
+
+const NUTRIENTS = [
+  { id: "energy", value: "1624 kJ / 388 kcal", intake: "19%" },
+  { id: "fat", value: "26 g", intake: "37%" },
+  { id: "saturates", value: "5.1 g", intake: "26%" },
+  { id: "carbs", value: "21 g", intake: "8%" },
+  { id: "sugars", value: "13 g", intake: "14%" },
+  { id: "protein", value: "18 g", intake: "36%" },
+  { id: "salt", value: "2.3 g", intake: "38%" },
+];
+
+const STEPS = [
+  {
+    id: "warm-oil",
+    title: "Warm the oil",
+    start: 0,
+    end: 3,
+    instructions: [
+      "Set a wide skillet over medium heat.",
+      "Add the olive oil and let it shimmer.",
+    ],
+  },
+  {
+    id: "chop-veg",
+    title: "Chop the vegetables",
+    start: 0,
+    end: 8,
+    instructions: [
+      "Dice the onion.",
+      "Slice the pepper into short strips.",
+      "Mince the garlic.",
+    ],
+  },
+  {
+    id: "soften-veg",
+    title: "Soften onion and pepper",
+    start: 8,
+    end: 18,
+    instructions: [
+      "Add the onion and pepper to the skillet with a pinch of the salt.",
+      "Cook, stirring now and then, until the onion is translucent and the pepper has softened.",
+    ],
+  },
+  {
+    id: "bloom-spices",
+    title: "Bloom the spices",
+    start: 18,
+    end: 20,
+    instructions: [
+      "Stir in the garlic, cumin, paprika, and cayenne.",
+      "Cook until fragrant, about a minute, so the spices do not stay raw.",
+    ],
+  },
+  {
+    id: "simmer-tomatoes",
+    title: "Simmer the tomatoes",
+    start: 20,
+    end: 32,
+    instructions: [
+      "Pour in the tomatoes and the remaining salt.",
+      "Crush any large pieces with the spoon.",
+      "Let the sauce thicken until a spoon leaves a brief trail.",
+    ],
+  },
+  {
+    id: "chop-parsley",
+    title: "Chop the parsley",
+    start: 28,
+    end: 32,
+    instructions: [
+      "While the sauce simmers, chop the parsley and set it aside for serving.",
+    ],
+  },
+  {
+    id: "cook-eggs",
+    title: "Cook the eggs",
+    start: 32,
+    end: 40,
+    instructions: [
+      "Make four wells in the sauce with the back of a spoon.",
+      "Crack an egg into each well.",
+      "Cover the skillet and cook until the whites are set and the yolks are still runny, 6–8 minutes.",
+    ],
+  },
+  {
+    id: "rest-serve",
+    title: "Rest and serve",
+    start: 40,
+    end: 42,
+    instructions: [
+      "Take the skillet off the heat and let it stand a minute.",
+      "Grind over black pepper, scatter the parsley, and serve in the pan.",
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Layout
+// ---------------------------------------------------------------------------
+
+const COPY = {
+  en: {
+    ingredients: "Ingredients",
+    utensils: "Utensils",
+    steps: "Steps",
+    nutrition: "Nutrition",
+    typicalValues: "Typical values",
+    perServing: "Per serving",
+    referenceIntake: "Reference intake",
+    timelineAria: "Cooking timeline in minutes from start",
+    timelineSpot: (start, end) =>
+      `${start}–${end} min from start`,
+    nutrients: {
+      energy: "Energy",
+      fat: "Fat",
+      saturates: "of which saturates",
+      carbs: "Carbohydrate",
+      sugars: "of which sugars",
+      protein: "Protein",
+      salt: "Salt",
+    },
+  },
+  pl: {
+    ingredients: "Składniki",
+    utensils: "Przybory",
+    steps: "Kroki",
+    nutrition: "Wartości odżywcze",
+    typicalValues: "Wartość odżywcza",
+    perServing: "Na porcję",
+    referenceIntake: "% RWS",
+    timelineAria: "Oś czasu gotowania w minutach od początku",
+    timelineSpot: (start, end) =>
+      `${start}–${end} min od początku`,
+    nutrients: {
+      energy: "Energia",
+      fat: "Tłuszcz",
+      saturates: "w tym kwasy nasycone",
+      carbs: "Węglowodany",
+      sugars: "w tym cukry",
+      protein: "Białko",
+      salt: "Sól",
+    },
+  },
+};
+
+
+const copy = COPY[LANGUAGE];
+const escapeHTML = value => String(value).replace(/[&<>"']/g, char => ({"&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"}[char]));
+const storageKey = `lets-cook:${location.pathname}:${NAME}`;
+let saved;
+try { saved = JSON.parse(localStorage.getItem(storageKey)); } catch {}
+const checked = saved?.checked && typeof saved.checked === "object" ? saved.checked : {};
+let selectedId = STEPS.some(step => step.id === saved?.step) ? saved.step : STEPS[0]?.id;
+function save() {
+  try { localStorage.setItem(storageKey, JSON.stringify({ checked, step: selectedId })); } catch {}
+}
+function servingsLabel(count) {
+  if (LANGUAGE === "en") return count === 1 ? "1 serving" : `${count} servings`;
+  if (count === 1) return "1 porcja";
+  const ones = count % 10, tens = count % 100;
+  return `${count} ${ones >= 2 && ones <= 4 && (tens < 12 || tens > 14) ? "porcje" : "porcji"}`;
+}
+const dots = '<span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>';
+function panel(title, content, kind = "") {
+  return `<section class="window ${kind}"><header><h2>${escapeHTML(title)}</h2>${dots}</header><div class="content">${content}</div></section>`;
+}
+function checklist(items, kind) {
+  return `<div class="checklist">${items.map(item => {
+    const id = `${kind}:${item.id}`;
+    return `<label><input type="checkbox" data-check="${escapeHTML(id)}" ${checked[id] ? "checked" : ""}><span>${escapeHTML(item.amount ? `${item.amount} ${item.name}` : item.name)}</span></label>`;
+  }).join("")}</div>`;
+}
+function timeline() {
+  if (!STEPS.length) return "";
+  const origin = Math.min(...STEPS.map(step => step.start));
+  const total = Math.max(...STEPS.map(step => step.end));
+  const span = Math.max(total - origin, 1);
+  const left = 16 + String(STEPS.length).length * 8;
+  const width = 720, rowHeight = 28, height = 8 + STEPS.length * rowHeight + 32;
+  const x = min => left + (min - origin) / span * (width - left - 28);
+  const interval = span <= 20 ? 5 : span <= 60 ? 10 : span <= 120 ? 20 : span <= 240 ? 30 : 60;
+  let ticks = "";
+  for (let t = origin; t <= total; t += interval) {
+    ticks += `<line x1="${x(t)}" x2="${x(t)}" y1="8" y2="${height - 32}" stroke="var(--grid)"/><text x="${x(t)}" y="${height - 10}" text-anchor="middle" fill="var(--ink)" font-size="11">${t} min</text>`;
+  }
+  const rows = STEPS.map((step, i) => {
+    const y = 8 + i * rowHeight, x1 = x(step.start), x2 = x(step.end), barWidth = Math.max(x2 - x1, 4);
+    const inside = barWidth >= step.title.length * 6.6 + 16;
+    const right = width - 28 - x2 >= x1 - left;
+    const labelX = inside ? x1 + 8 : right ? x2 + 6 : x1 - 6;
+    return `<g role="button" tabindex="0" data-step="${escapeHTML(step.id)}" aria-pressed="${step.id === selectedId}" aria-label="${escapeHTML(`${i + 1}. ${step.title}, ${copy.timelineSpot(step.start, step.end)}`)}">
+      <rect class="selection" x="0" y="${y}" width="${width}" height="${rowHeight}"/>
+      <text x="${left - 8}" y="${y + 18}" text-anchor="end" font-size="11" fill="var(--ink)">${i + 1}</text>
+      <rect class="bar" x="${x1}" y="${y + 6}" width="${barWidth}" height="16" rx="4"/>
+      <text x="${labelX}" y="${y + 18}" text-anchor="${inside || right ? "start" : "end"}" fill="var(--text)" font-size="11">${escapeHTML(step.title)}</text></g>`;
+  }).join("");
+  return `<div class="timeline"><svg viewBox="0 0 ${width} ${height}" role="group" aria-label="${escapeHTML(copy.timelineAria)}">${ticks}${rows}</svg></div>`;
+}
+const ingredients = INGREDIENTS.filter(group => group.items.length);
+const columns = [
+  ingredients.length ? panel(copy.ingredients, ingredients.map(group => `<div class="group"><h3>${escapeHTML(group.name)}</h3>${checklist(group.items, "ingredient")}</div>`).join(""), "ingredients") : "",
+  UTENSILS.length ? panel(copy.utensils, checklist(UTENSILS, "utensil"), "utensils") : "",
+].filter(Boolean);
+const nutrition = NUTRIENTS.length ? panel(copy.nutrition, `<table><thead><tr><th scope="col">${copy.typicalValues}</th><th scope="col">${copy.perServing}</th><th scope="col">${copy.referenceIntake}</th></tr></thead><tbody>${NUTRIENTS.map(row => `<tr><td class="${["saturates", "sugars"].includes(row.id) ? "nested" : ""}">${escapeHTML(copy.nutrients[row.id])}</td><td>${escapeHTML(row.value)}</td><td>${escapeHTML(row.intake)}</td></tr>`).join("")}</tbody></table>`) : "";
+const steps = STEPS.length ? panel(copy.steps, timeline() + `<div class="step-list">${STEPS.map((step, i) => `<button type="button" class="step" data-step="${escapeHTML(step.id)}" aria-pressed="${step.id === selectedId}"><span class="step-title">${i + 1}. ${escapeHTML(step.title)}</span><span class="time">${escapeHTML(copy.timelineSpot(step.start, step.end))}</span>${step.instructions.map(line => `<span>· ${escapeHTML(line)}</span>`).join("")}</button>`).join("")}</div>`) : "";
+document.documentElement.lang = LANGUAGE;
+document.title = NAME;
+document.querySelector("#recipe").innerHTML = `<header class="titlebar"><div><h1>${escapeHTML(NAME)}</h1><small>${servingsLabel(SERVINGS)}</small></div>${dots}</header><div class="paper">${nutrition}${columns.length > 1 ? `<div class="columns">${columns.join("")}</div>` : columns.join("")}${steps}</div>`;
+document.addEventListener("change", event => {
+  const input = event.target.closest("[data-check]");
+  if (!input) return;
+  checked[input.dataset.check] = input.checked;
+  save();
+});
+function selectStep(event) {
+  const target = event.target.closest("[data-step]");
+  if (!target) return;
+  if (event.type === "keydown") {
+    if (target.tagName === "BUTTON" || !["Enter", " "].includes(event.key)) return;
+    event.preventDefault();
+  }
+  selectedId = target.dataset.step;
+  document.querySelectorAll("[data-step]").forEach(node => node.setAttribute("aria-pressed", String(node.dataset.step === selectedId)));
+  save();
+}
+document.addEventListener("click", selectStep);
+document.addEventListener("keydown", selectStep);
+</script>
+</body>
+</html>
