@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Prefer an available visualization or mockup tool that supports the required content and interactions. Read and follow its instructions for output format, previewing, file location, theming, and saving interactive selections. Use [example.html](example.html) as a reference for content, design, and behavior, adapting its implementation to the selected tool.
 
-If no suitable tool is available, copy [example.html](example.html) to a writable output location, customize it, and open it in a browser. Follow the environment’s instructions for choosing that location.
+If no suitable tool is available, copy [example.html](example.html) to a writable output location, customize it, and - if not opened yet - open it in a browser.
 
 1. Create a mockup of the proposed interface that matches the app’s styling. Support switching between pages and design variants when presenting several, and show device frames for the relevant target devices. Use the selected tool’s built-in controls where appropriate. Present the mockup and iterate with the user.
 2. Once the user is happy with the mockup, follow `/write-plan` to write the implementation plan. Reference the agreed mockup using the selected tool’s artifact reference or, for a standalone file, its path.
