@@ -9,7 +9,7 @@ disable-model-invocation: true
 1. Create a mockup of the proposed interface that matches the app’s styling. Support switching between pages and design variants when presenting several, and show device frames for the relevant target devices.
 2. If not using a specialized tool for the mockup process, open the mockup for the user in a browser.
 3. Iterate with the user. Don't reopen the mockup unless asked to.
-3. Once the user is happy with the mockup, follow `/write-plan` to write the implementation plan. Reference the agreed mockup using the selected tool’s artifact reference or, for a standalone file, its path.
+3. Once the user is happy with the mockup, write an implementation plan, referring to the mockup as needed.
 
 
 ## Visualization tool choice
