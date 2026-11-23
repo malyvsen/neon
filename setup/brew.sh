@@ -1,5 +1,6 @@
 #!/bin/bash
 echo "Installing Homebrew packages..."
+brew trust anomalyco/tap || true
 brew bundle --no-upgrade --file="$NEON_ROOT/Brewfile"
 
 echo "Setting up Docker Desktop..."

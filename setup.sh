@@ -18,18 +18,18 @@ ensure_repo() {
 	local here
 	here="$(cd "$(dirname "${BASH_SOURCE[0]:-}")" && pwd)"
 	if [[ -f "$here/setup.sh" && -d "$here/setup" ]]; then
-		git -C "$here" pull --ff-only || true
+		git -C "$here" pull --rebase --autostash >&2
 		echo "$here"
 		return
 	fi
 	if [[ -d "$dest/.git" ]]; then
-		git -C "$dest" pull --ff-only || true
+		git -C "$dest" pull --rebase --autostash >&2
 		echo "$dest"
 		return
 	fi
-	echo "Cloning neon..."
+	echo "Cloning neon..." >&2
 	mkdir -p "$(dirname "$dest")"
-	git clone https://github.com/malyvsen/neon.git "$dest"
+	git clone https://github.com/malyvsen/neon.git "$dest" >&2
 	echo "$dest"
 }
 
