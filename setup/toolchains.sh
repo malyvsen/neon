@@ -5,8 +5,7 @@ if [[ ! -d "$HOME/.cargo" ]]; then
 	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
 fi
 
-volta install node
-volta install pnpm
+proto install --config-mode global
 
 if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
 	RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"

@@ -39,7 +39,7 @@ NEON_ROOT="$(ensure_repo)"
 cd "$NEON_ROOT"
 
 source "$NEON_ROOT/setup/brew.sh"
+source "$NEON_ROOT/setup/dotfiles.sh"
 source "$NEON_ROOT/setup/toolchains.sh"
 source "$NEON_ROOT/setup/ssh.sh"
-source "$NEON_ROOT/setup/dotfiles.sh"
 source "$NEON_ROOT/setup/gh.sh"

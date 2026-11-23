@@ -17,8 +17,8 @@ eval "$(uv generate-shell-completion zsh)"
 # utils in rust
 export PATH="$HOME/.cargo/bin:$PATH"
 
-export VOLTA_HOME="$HOME/.volta"
-export PATH="$VOLTA_HOME/bin:$PATH"
+export PROTO_HOME="$HOME/.proto"
+export PATH="$PROTO_HOME/shims:$PATH"
 
 export PNPM_HOME="$HOME/Library/pnpm"
 export PATH="$PNPM_HOME/bin:$PATH"
